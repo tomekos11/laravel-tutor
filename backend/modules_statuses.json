@@ -1,3 +1,8 @@
 {
-    "Users": true
+    "Users": true,
+    "Auth": true,
+    "User": true,
+    "Ratings": true,
+    "Groups": true,
+    "Courses": true
 }

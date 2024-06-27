@@ -1,0 +1,7 @@
+@extends('ratings::layouts.master')
+
+@section('content')
+    <h1>Hello World</h1>
+
+    <p>Module: {!! config('ratings.name') !!}</p>
+@endsection
