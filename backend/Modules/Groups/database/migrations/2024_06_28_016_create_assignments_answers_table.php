@@ -12,22 +12,19 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('user__users', function (Blueprint $table) {
+        Schema::create('group__assignments_answers', function (Blueprint $table) {
             $table->id();
 
-            $table->string('username')->unique();
-            $table->string('password');
-
-            $table->string('name');
-            $table->string('surname');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->date('birthday');
-
-            $table->string('image');
+            $table->foreignId('assignment_answer_correctness_id');
+            
+            $table->boolean('is_correct');
 
             $table->timestamps();
 
+            $table->foreign('group__assignments_answers_correctness')
+                ->references('id')
+                ->on('group__assignments')
+                ->onDelete('cascade');
         });
     }
 
@@ -38,6 +35,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('user__users');
+        Schema::dropIfExists('group__assignments_answers');
     }
 };

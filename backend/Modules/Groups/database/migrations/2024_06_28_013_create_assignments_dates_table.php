@@ -12,23 +12,18 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('system__streaks', function (Blueprint $table) {
+        Schema::create('group__assignments_dates', function (Blueprint $table) {
             $table->id();
 
-            //pola relacyjne
-            $table->foreignId('user_id');
-
-            //pola
-            $table->integer('count');
+            $table->foreignId('user_group_id');
+            $table->timestamp('open_date');
+            $table->timestamp('finish_date');
+            
             $table->timestamps();
 
-            //index
-            $table->index('user_id');
-
-            //relacja z streak-user
-            $table->foreign('user_id')
+            $table->foreign('user_group_id')
                 ->references('id')
-                ->on('auth__users')
+                ->on('group__users_groups')
                 ->onDelete('cascade');
         });
     }
@@ -40,6 +35,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('system__streaks');
+        Schema::dropIfExists('group__assignments_dates');
     }
 };
