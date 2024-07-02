@@ -38,8 +38,7 @@ class User extends Authenticatable
         'birthday' => 'datetime'
     ];
 
-    public function userRoles()
-    {
+    public function userRoles(){
         return $this -> hasMany(UserRole::class, 'user_id', 'id');
     }
 
@@ -47,7 +46,7 @@ class User extends Authenticatable
         return $this -> hasOne(Preference::class, 'user_id', 'id');
     }
 
-    public function certificate(){
+    public function certificates(){
         return $this -> hasMany(Certificate::class, 'user_id', 'id');
     }
 
@@ -57,5 +56,17 @@ class User extends Authenticatable
 
     public function userGroups(){
         return $this -> hasMany(UserGroup::class, 'user_id', 'id');
+    }
+
+    public function usersConversations(){
+        return $this -> hasMany(UserConversation::class, 'user_id', 'id');
+    }
+
+    public function conversations(){
+        return $this -> hasMany(Conversation::class, 'owner_id', 'id');
+    }
+
+    public function messages(){
+        return $this -> hasMany(Message::class, 'user_id', 'id');
     }
 }
