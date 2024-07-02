@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Users\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Users\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -19,9 +20,15 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'username' => 'required|string|max:40',
             'password' => 'required|string|min:8|confirmed',
+
+            'name' => 'required|string|max:60',
+            'surname' => 'required|string|max:60',
+
+            'email' => 'required|string|email|max:120|unique:user__users',
+            'phone' => 'required|string|max:20|unique:user__users',
+            'birthday' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -29,9 +36,15 @@ class AuthController extends Controller
         }
 
         $user = User::create([
+            'username' => $request->username,
+            'password'=> Hash::make($request->password),
+
             'name' => $request->name,
+            'surname' => $request->surname,
+
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'phone'=> $request->phone,
+            'birthday' => $request->birthday
         ]);
 
         $token = $user->createToken('Personal Access Token')->accessToken;
@@ -57,6 +70,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
+
+
+    public function me(Request $request)
+    {
+        $user = Auth::user();
+        return $user;
+    }
+
 
     /**
      * Wylogowanie użytkownika.
