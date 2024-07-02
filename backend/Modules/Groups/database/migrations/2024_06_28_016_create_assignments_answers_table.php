@@ -15,15 +15,15 @@ return new class () extends Migration {
         Schema::create('group__assignments_answers', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('assignment_answer_correctness_id');
+            $table->foreignId('answer_correctness_id');
             
             $table->boolean('is_correct');
 
             $table->timestamps();
 
-            $table->foreign('group__assignments_answers_correctness')
+            $table->foreign('answer_correctness_id')
                 ->references('id')
-                ->on('group__assignments')
+                ->on('group__answers_correctness')
                 ->onDelete('cascade');
         });
     }

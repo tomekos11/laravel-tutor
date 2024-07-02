@@ -16,8 +16,8 @@ return new class () extends Migration {
             $table->id();
 
             $table->foreignId('user_group_id');
-            $table->timestamp('open_date');
-            $table->timestamp('finish_date');
+            $table->timestamp('open_date')->nullable();
+            $table->timestamp('finish_date')->nullable();
             
             $table->timestamps();
 

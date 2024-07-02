@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('group__assignments_answers_correctness', function (Blueprint $table) {
+        Schema::create('group__answers_correctness', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('assignment_id');
@@ -40,6 +40,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('group__assignments_answers_correctness');
+        Schema::dropIfExists('group__answers_correctness');
     }
 };
