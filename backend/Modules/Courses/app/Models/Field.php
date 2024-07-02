@@ -1,23 +1,22 @@
 <?php
 
-namespace Modules\Groups\Models;
+namespace Modules\Courses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Assignment extends Model
+class Field extends Model
 {
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $table = 'group__assignments';
+    protected $table = 'course__fields';
     protected $fillable = [
-        'user_id',
-        'assingment_date_id'
+        'id',
+        'name'
     ];
-
     protected $hidden = [
 
     ];
@@ -26,4 +25,7 @@ class Assignment extends Model
 
     ];
 
+    public function courses(){
+        return $this -> hasMany(Course::class, 'field_id', 'id');
+    }
 }

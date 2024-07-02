@@ -1,34 +1,36 @@
 <?php
 
-namespace Modules\Groups\Models;
+namespace Modules\Courses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Courses\Models\Question;
 
-class AssignmentAnswerCorrectness extends Model
+class TopicQuestion extends Model
 {
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $table = 'group__answers_correctness';
+    protected $table = 'course__topics_questions';
     protected $fillable = [
-        'assignment_id',
-        'question_id',
-        'is_correct'
+        'id',
+        'topic_id',
+        'question_id'
     ];
-
     protected $hidden = [
 
     ];
 
     protected $casts = [
-        'is_correct' => 'boolean'
+
     ];
 
     public function question(){
         return $this -> belongsTo(Question::class, 'question_id', 'id');
+    }
+
+    public function topic(){
+        return $this -> belongsTo(Topic::class, 'topic_id', 'id');
     }
 }

@@ -28,6 +28,10 @@ class Rating extends Model
     protected $casts = [
 
     ];
-
-    //???
+    public function reviewer(){
+        return $this -> belongsTo(User::class, 'reviewer_id', 'id');
+    }
+    public function ratedUser(){
+        return $this -> belongsTo(User::class, 'tutor_id', 'id');
+    }
 }

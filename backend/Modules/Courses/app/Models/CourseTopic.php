@@ -1,24 +1,23 @@
 <?php
 
-namespace Modules\Groups\Models;
+namespace Modules\Courses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Courses\Models\Course;
 
-class Group extends Model
+class CourseTopic extends Model
 {
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $table = 'group__groups';
+    protected $table = 'course__courses_topics';
     protected $fillable = [
-        'course_id',
-        'name'
+        'id',
+        'topic_id',
+        'course_id'
     ];
-
     protected $hidden = [
 
     ];
@@ -30,8 +29,7 @@ class Group extends Model
     public function course(){
         return $this -> belongsTo(Course::class, 'course_id', 'id');
     }
-
-    public function userGroups(){
-        return $this -> hasMany(UserGroup::class, 'group_id', 'id');
+    public function topic(){
+        return $this -> belongsTo(Topic::class, 'topic_id', 'id');
     }
 }

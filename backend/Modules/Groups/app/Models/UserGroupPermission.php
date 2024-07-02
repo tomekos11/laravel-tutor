@@ -14,8 +14,8 @@ class UserGroupPermission extends Model
      */
     protected $table = 'group__user_groups_permissions';
     protected $fillable = [
-        'user_groups_id',
-        'permissions_id'
+        'user_group_id',
+        'permission_id'
     ];
 
     protected $hidden = [
