@@ -24,7 +24,7 @@ return new class () extends Migration {
             $table->string('phone')->unique();
             $table->date('birthday');
 
-            $table->string('image');
+            $table->string('image')->nullable()->default(null);
 
             $table->timestamps();
 

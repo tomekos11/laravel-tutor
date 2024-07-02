@@ -1,10 +1,12 @@
 <template>
-  <q-layout view="hHh Lpr fFf">
+  <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title> Eraven </q-toolbar-title>
+        <q-toolbar-title>
+          Quasar App
+        </q-toolbar-title>
 
-        <div>v1.01</div>
+        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
