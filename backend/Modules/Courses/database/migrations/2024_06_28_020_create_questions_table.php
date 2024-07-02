@@ -12,21 +12,20 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('user__users', function (Blueprint $table) {
+        Schema::create('course__questions', function (Blueprint $table) {
             $table->id();
 
-            $table->string('username')->unique();
-            $table->string('password');
+            $table->foreignId('creator_id');
 
-            $table->string('name');
-            $table->string('surname');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->date('birthday');
-
-            $table->string('image');
+            $table->string('content');
+            $table->string('type');
 
             $table->timestamps();
+
+            $table->foreign('creator_id')
+                ->references('id')
+                ->on('user__users')
+                ->onDelete('cascade');
 
         });
     }
@@ -38,6 +37,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('user__users');
+        Schema::dropIfExists('course__questions');
     }
 };
