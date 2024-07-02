@@ -25,4 +25,7 @@ class AssignmentAnswer extends Model
         'is_correct' => 'boolean'
     ];
 
+    public function answerCorrectness(){
+        return $this -> belongsTo(AssignmentAnswerCorrectness::class, 'answer_correctness_id', 'id');
+    }
 }

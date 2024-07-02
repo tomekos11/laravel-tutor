@@ -32,8 +32,8 @@ class UserGroup extends Model
         return $this -> hasMany(UserGroupPermission::class, 'user_groups_id', 'id');
     }
 
-    public function assignment(){
-        return $this -> hasMany(Assignment::class, 'user_group_id', 'id');
+    public function assignmentDates(){
+        return $this -> hasMany(AssignemtDate::class, 'user_group_id', 'id');
     }
 
     public function user(){

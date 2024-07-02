@@ -31,4 +31,12 @@ class AssignmentAnswerCorrectness extends Model
     public function question(){
         return $this -> belongsTo(Question::class, 'question_id', 'id');
     }
+
+    public function assignmentAnswers(){
+        return $this -> hasMany(AssignmentAnswer::class, 'answer_correctness_id', 'id');
+    }
+
+    public function assignment(){
+        return $this -> belongsTo(Assignment::class, 'assignment_id', 'id');
+    }
 }

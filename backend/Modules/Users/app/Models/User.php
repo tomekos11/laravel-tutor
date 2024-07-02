@@ -7,6 +7,7 @@ use Modules\Courses\Models\Answer;
 use Modules\Courses\Models\AnswerRating;
 use Modules\Courses\Models\Question;
 use Modules\Courses\Models\QuestionRating;
+use Modules\Groups\Models\Assignment;
 use Modules\Groups\Models\UserGroup;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -85,5 +86,8 @@ class User extends Authenticatable
     }
     public function questionRatings(){
         return $this -> hasMany(QuestionRating::class, 'reviewer_id', 'id');
+    }
+    public function assignments(){
+        return $this -> hasMany(Assignment::class, 'user_id', 'id');
     }
 }

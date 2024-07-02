@@ -45,8 +45,7 @@ class Question extends Model
     }
 
     public function assignmentQuestions(){
-        return $this -> hasMany();
-        //todo
+        return $this -> hasMany(AssignmentQuestion::class, 'question_id', 'id');
     }
     public function answerCorrectnesses(){
         return $this -> hasMany(AssignmentAnswerCorrectness::class, 'question_id', 'id');
