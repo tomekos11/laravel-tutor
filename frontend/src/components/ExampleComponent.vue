@@ -21,9 +21,10 @@ interface Props {
   todos?: Todo[];
   meta: Meta;
   active: boolean;
-}
+};
+
 const props = withDefaults(defineProps<Props>(), {
-  todos: () => [],
+  todos: () => []
 });
 
 const clickCount = ref(0);
@@ -33,5 +34,4 @@ function increment() {
 }
 
 const todoCount = computed(() => props.todos.length);
-
 </script>
