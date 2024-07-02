@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Users\Http\Controllers\UsersController;
+use App\Http\Controllers\AuthController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,6 +14,9 @@ use Modules\Users\Http\Controllers\UsersController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('users', UsersController::class)->names('users');
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
 });

@@ -2,7 +2,6 @@
 
 namespace Modules\Users\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Groups\Models\UserGroup;
 use Illuminate\Foundation\Auth\User as Authenticatable;

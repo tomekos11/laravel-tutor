@@ -22,7 +22,7 @@ return new class () extends Migration {
 
             $table->foreign('course_id')
                 ->references('id')
-                ->on('group__courses')
+                ->on('course__courses')
                 ->onDelete('cascade');
         });
     }

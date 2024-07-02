@@ -41,9 +41,11 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'passport',
-            'provider' => 'users',
+        'guards' => [
+            'api' => [
+                'driver' => 'passport',
+                'provider' => 'users',
+            ],
         ],
     ],
 
@@ -67,7 +69,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => Modules\Users\Models\User::class,
         ],
 
         // 'users' => [

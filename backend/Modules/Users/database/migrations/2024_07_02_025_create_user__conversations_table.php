@@ -15,11 +15,17 @@ return new class () extends Migration {
         Schema::create('user__conversations', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('owner_id');
+
             $table->string('title');
             $table->string('theme');
-            
+
             $table->timestamps();
 
+            $table->foreign('owner_id')
+                ->references('id')
+                ->on('user__users')
+                ->onDelete('cascade');
 
         });
     }

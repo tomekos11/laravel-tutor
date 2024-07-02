@@ -15,12 +15,12 @@ return new class () extends Migration {
         Schema::create('user__users_conversations', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('owner_id');
+            $table->foreignId('member_id');
             $table->foreignId('conversation_id');
             
             $table->timestamps();
 
-            $table->foreign('owner_id')
+            $table->foreign('member_id')
                 ->references('id')
                 ->on('user__users')
                 ->onDelete('cascade');
