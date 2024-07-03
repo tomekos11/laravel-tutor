@@ -3,7 +3,9 @@
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
-          Quasar App
+          <router-link :to="{ name: 'login' }">
+            Tutor App
+          </router-link>
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
