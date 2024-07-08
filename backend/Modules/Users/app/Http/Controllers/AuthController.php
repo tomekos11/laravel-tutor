@@ -23,12 +23,12 @@ class AuthController extends Controller
             'username' => 'required|string|max:40',
             'password' => 'required|string|min:8|confirmed',
 
-            'name' => 'required|string|max:60',
-            'surname' => 'required|string|max:60',
+            // 'name' => 'required|string|max:60',
+            // 'surname' => 'required|string|max:60',
 
             'email' => 'required|string|email|max:120|unique:user__users',
             'phone' => 'required|string|max:20|unique:user__users',
-            'birthday' => 'required|date',
+            // 'birthday' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -39,12 +39,12 @@ class AuthController extends Controller
             'username' => $request->username,
             'password'=> Hash::make($request->password),
 
-            'name' => $request->name,
-            'surname' => $request->surname,
+            'name' => $request->name ?? null,
+            'surname' => $request->surname ?? null,
 
-            'email' => $request->email,
-            'phone'=> $request->phone,
-            'birthday' => $request->birthday
+            'email' => $request->email ?? null,
+            'phone'=> $request->phone ?? null,
+            'birthday' => $request->birthday ?? null
         ]);
 
         $token = $user->createToken('Personal Access Token')->accessToken;
