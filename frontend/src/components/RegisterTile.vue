@@ -2,7 +2,7 @@
   <div class="text-h6 q-my-md">
     <span class="text-accent">Register</span> new account
   </div>
-  <q-form @submit.prevent="loginRequest">
+  <q-form @submit.prevent="registerRequest">
     <q-input
       v-model="username"
       standout="bg-white text-accent"
@@ -108,9 +108,12 @@
       class="column justify-center text-center q-my-lg text-bold text-grey-8"
       style="line-height: 28px;"
     >
-      <span class="text-hover-underline">
+      <router-link
+        class="text-hover-underline"
+        to="/login"
+      >
         Already have an account?
-      </span>
+      </router-link>
     </div>
   </q-form>
 </template>
@@ -123,6 +126,7 @@ const isPwd = ref(true);
 
 const username = ref('');
 const password = ref('');
+
 const passwordConfirmation = ref('');
 
 interface ConfirmMethod {
@@ -135,11 +139,12 @@ const confirmMethod: Ref<ConfirmMethod> = ref({
   value: ''
 });
 
-const loginRequest = async () => {
+const registerRequest = async () => {
   try {
-    const res = await api.post('/api/login', {
+    const res = await api.post('/api/register', {
       username: username.value,
-      password: password.value
+      password: password.value,
+      email: confirmMethod.value
     });
     console.log(res.data);
   } catch (err) {
