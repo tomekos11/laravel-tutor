@@ -4,11 +4,11 @@
   </div>
   <q-form @submit.prevent="loginRequest">
     <q-input
-      v-model="username"
+      v-model="login"
       style="border-radius: 4px;"
       class="q-mb-sm bg-white"
       outlined
-      label="Username"
+      label="Login"
       color="accent"
     />
     <q-input
@@ -66,14 +66,14 @@ import { ref } from 'vue';
 
 const isPwd = ref(true);
 
-const username = ref('');
+const login = ref('');
 const password = ref('');
 const remember = ref(false);
 
 const loginRequest = async () => {
   try {
     const res = await api.post('/api/login', {
-      username: username.value,
+      login: login.value,
       password: password.value
     });
     console.log(res.data);

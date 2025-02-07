@@ -20,14 +20,15 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:40',
+            'username' => 'required|string|max:40|unique:user__users',
             'password' => 'required|string|min:8|confirmed',
 
             // 'name' => 'required|string|max:60',
             // 'surname' => 'required|string|max:60',
 
-            'email' => 'required|string|email|max:120|unique:user__users',
-            'phone' => 'required|string|max:20|unique:user__users',
+            'email' => 'required_without:phone|nullable|string|email|max:120|unique:user__users',
+            'phone' => 'required_without:email|nullable|string|max:20|unique:user__users',
+
             // 'birthday' => 'required|date',
         ]);
 
@@ -49,7 +50,10 @@ class AuthController extends Controller
 
         $token = $user->createToken('Personal Access Token')->accessToken;
 
-        return response()->json(['token' => $token], 201);
+        return response()->json($user, 201)->cookie(
+            'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true
+        );
+
     }
 
     /**
@@ -60,24 +64,48 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        $credentials = $request->only('login', 'password');
+
+        if (!$credentials['login'] || !$credentials['password']) {
+            return response()->json(['error' => 'Email, username, or phone and password are required'], 400);
+        }
+
+        $user = User::where('email', $credentials['login'])
+                    ->orWhere('username', $credentials['login'])
+                    ->orWhere('phone', $credentials['login'])
+                    ->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        if (Auth::attempt(['id' => $user->id, 'password' => $credentials['password']])) {
             $token = $user->createToken('Personal Access Token')->accessToken;
-            return response()->json(['token' => $token], 200);
+
+            return response()->json($user, 201)->cookie(
+                'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true
+            );
         } else {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Bad credentials'], 401);
         }
     }
+
 
 
     public function me(Request $request)
     {
         $user = Auth::user();
-        return $user;
+    
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated',
+            ], 401);
+        }
+    
+        return response()->json($user);
     }
-
 
     /**
      * Wylogowanie użytkownika.

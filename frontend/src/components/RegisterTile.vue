@@ -140,12 +140,29 @@ const confirmMethod: Ref<ConfirmMethod> = ref({
 });
 
 const registerRequest = async () => {
+
+  interface Data {
+    username: string;
+    password: string;
+    password_confirmation: string;
+    email?: string;
+    phone?: string;
+  }
+
+  const data: Data = {
+    username: username.value,
+    password: password.value,
+    password_confirmation: passwordConfirmation.value
+  }
+
+  if (confirmMethod.value.type === 'email') {
+    data.email = confirmMethod.value.value
+  } else {
+    data.phone = confirmMethod.value.value
+  }
+
   try {
-    const res = await api.post('/api/register', {
-      username: username.value,
-      password: password.value,
-      email: confirmMethod.value
-    });
+    const res = await api.post('/api/register', data);
     console.log(res.data);
   } catch (err) {
     console.error(err);

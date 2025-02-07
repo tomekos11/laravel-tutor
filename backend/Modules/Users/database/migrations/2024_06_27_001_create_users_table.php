@@ -18,11 +18,11 @@ return new class () extends Migration {
             $table->string('username')->unique();
             $table->string('password');
 
-            $table->string('name');
-            $table->string('surname');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->date('birthday');
+            $table->string('name')->nullable();
+            $table->string('surname')->nullable();
+            $table->string('email')->nullable()->unique();
+            $table->string('phone')->nullable()->unique();
+            $table->date('birthday')->nullable();
 
             $table->string('image')->nullable()->default(null);
 
