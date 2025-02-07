@@ -37,11 +37,21 @@
         </div>
 
         <q-btn
+          v-if="useUserStore().isUserLogged"
           rounded
           dense
           icon="person"
           class="bg-purple-1 text-grey-9"
         />
+
+        <router-link
+          v-else
+            to="/login"
+            class="q-ml-xl text-white text-bold"
+          >
+            Zaloguj
+          </router-link>
+
       </q-toolbar>
     </q-header>
 
@@ -50,3 +60,9 @@
     </q-page-container>
   </q-layout>
 </template>
+
+<script setup lang="ts">
+import { useUserStore } from 'src/stores/user-store';
+
+const userStore = useUserStore()
+</script>

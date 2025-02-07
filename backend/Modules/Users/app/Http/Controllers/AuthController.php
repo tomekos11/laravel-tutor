@@ -51,7 +51,7 @@ class AuthController extends Controller
         $token = $user->createToken('Personal Access Token')->accessToken;
 
         return response()->json($user, 201)->cookie(
-            'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true
+            'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true, false, 'Lax'
         );
 
     }
@@ -83,8 +83,8 @@ class AuthController extends Controller
         if (Auth::attempt(['id' => $user->id, 'password' => $credentials['password']])) {
             $token = $user->createToken('Personal Access Token')->accessToken;
 
-            return response()->json($user, 201)->cookie(
-                'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true
+            return response()->json(['message' => 'Zalogowano'], 201)->cookie(
+                'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true, false
             );
         } else {
             return response()->json(['error' => 'Bad credentials'], 401);
@@ -96,15 +96,18 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         $user = Auth::user();
-    
+
         if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'User not authenticated',
-            ], 401);
+            ]);
         }
     
-        return response()->json($user);
+        return response()->json([
+            'success' => true,
+            'user' => $user
+        ]);
     }
 
     /**

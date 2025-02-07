@@ -62,7 +62,12 @@
 
 <script setup lang="ts">
 import { api } from 'src/boot/axios';
+import { useUserStore } from 'src/stores/user-store';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
 
 const isPwd = ref(true);
 
@@ -76,6 +81,13 @@ const loginRequest = async () => {
       login: login.value,
       password: password.value
     });
+
+    useUserStore().setUser(res.data);
+
+    router.push({
+      name: 'home'
+    })
+
     console.log(res.data);
   } catch (err) {
     console.error(err);
