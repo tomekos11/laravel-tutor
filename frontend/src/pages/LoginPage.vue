@@ -3,11 +3,11 @@
     <q-card
       square
       class="q-pa-sm relative-position q-pa-none bg-purple-3"
-      style="width:100vw; height: calc(100vh - 50px); overflow: hidden"
+      style="width: 100vw; height: calc(100vh - 50px); overflow: hidden"
     >
       <div
         class="absolute-center row flex-center text-white"
-        style="max-width: 35%; min-width: 400px; background: rgba(0, 0, 0, 0.70); z-index: 3;"
+        style="max-width: 35%; min-width: 400px; background: rgba(0, 0, 0, 0.7); z-index: 3"
       >
         <div class="col-10">
           <login-tile v-if="$route.name === 'login'" />
@@ -15,31 +15,16 @@
         </div>
       </div>
       <svg
-        style="z-index: 2; filter: drop-shadow(0px 0px 12px black);"
+        style="z-index: 2; filter: drop-shadow(0px 0px 12px black)"
         class="absolute-bottom"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1440 320"
       >
         <defs>
-          <linearGradient
-            id="gradient"
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="0%"
-          >
-            <stop
-              offset="0%"
-              style="stop-color:#6a1b9a;stop-opacity:1"
-            />
-            <stop
-              offset="80%"
-              style="stop-color:#c73fdf;stop-opacity:1"
-            />
-            <stop
-              offset="100%"
-              style="stop-color:#e92ed6;stop-opacity:1"
-            />
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color: #6a1b9a; stop-opacity: 1" />
+            <stop offset="80%" style="stop-color: #c73fdf; stop-opacity: 1" />
+            <stop offset="100%" style="stop-color: #e92ed6; stop-opacity: 1" />
           </linearGradient>
         </defs>
         <path
@@ -53,6 +38,8 @@
         :src="leftImgSrc"
         class="absolute-center"
         fit="fill"
+        decoding="sync"
+        height="200"
       />
     </q-card>
   </q-page>
@@ -62,4 +49,10 @@
 import leftImgSrc from '../assets/login-background.jpg';
 import LoginTile from 'src/components/LoginTile.vue';
 import RegisterTile from 'src/components/RegisterTile.vue';
+
+let a = 'xd';
+
+a = '123';
+
+console.log(a);
 </script>

@@ -13,6 +13,8 @@ export const useUserStore = defineStore('user', () => {
   const created_at = ref<string | null>(null);
   const updated_at = ref<string | null>(null);
 
+  const isDataFetched = ref(false);
+
   function setUser(userData: {
     id: number;
     email: string;
@@ -35,6 +37,8 @@ export const useUserStore = defineStore('user', () => {
     image.value = userData.image;
     created_at.value = userData.created_at;
     updated_at.value = userData.updated_at;
+
+    isDataFetched.value = true;
   }
 
   const clearUser = () => {
@@ -63,6 +67,7 @@ export const useUserStore = defineStore('user', () => {
     updated_at,
     setUser,
     clearUser,
+    isDataFetched,
     isUserLogged: computed(() => id.value !== null)
   };
 });

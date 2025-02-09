@@ -1,11 +1,9 @@
 <template>
-  <div class="text-h6 q-my-md">
-    <span class="text-accent">Login</span> your account
-  </div>
+  <div class="text-h6 q-my-md"><span class="text-accent">Login</span> your account</div>
   <q-form @submit.prevent="loginRequest">
     <q-input
       v-model="login"
-      style="border-radius: 4px;"
+      style="border-radius: 4px"
       class="q-mb-sm bg-white"
       outlined
       label="Login"
@@ -14,7 +12,7 @@
     <q-input
       v-model="password"
       :type="isPwd ? 'password' : 'text'"
-      style="border-radius: 4px;"
+      style="border-radius: 4px"
       class="q-mb-sm bg-white"
       outlined
       label="Password"
@@ -29,33 +27,17 @@
       </template>
     </q-input>
     <div>
-      <q-checkbox
-        v-model="remember"
-        label="Remember me"
-        class="q-mb-sm"
-        color="purple-6"
-      />
+      <q-checkbox v-model="remember" label="Remember me" class="q-mb-sm" color="purple-6" />
     </div>
-    <q-btn
-      type="submit"
-      class="full-width"
-      color="purple-9"
-    >
-      Submit
-    </q-btn>
+    <q-btn type="submit" class="full-width" color="purple-9"> Submit </q-btn>
     <div
       class="column justify-center text-center q-my-md text-bold text-grey-8"
-      style="line-height: 28px;"
+      style="line-height: 28px"
     >
-      <router-link
-        class="text-hover-underline text-grey-8"
-        :to="{ name: 'register' }"
-      >
+      <router-link class="text-hover-underline text-grey-8" :to="{ name: 'register' }">
         Create an account
       </router-link>
-      <span class="text-hover-underline">
-        Forgot password?
-      </span>
+      <span class="text-hover-underline"> Forgot password? </span>
     </div>
   </q-form>
 </template>
@@ -65,7 +47,6 @@ import { api } from 'src/boot/axios';
 import { useUserStore } from 'src/stores/user-store';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
 
 const router = useRouter();
 
@@ -79,14 +60,14 @@ const loginRequest = async () => {
   try {
     const res = await api.post('/api/login', {
       login: login.value,
-      password: password.value
+      password: password.value,
     });
 
-    useUserStore().setUser(res.data);
+    useUserStore().setUser(res.data.data);
 
-    router.push({
-      name: 'home'
-    })
+    await router.push({
+      name: 'home',
+    });
 
     console.log(res.data);
   } catch (err) {

@@ -83,9 +83,14 @@ class AuthController extends Controller
         if (Auth::attempt(['id' => $user->id, 'password' => $credentials['password']])) {
             $token = $user->createToken('Personal Access Token')->accessToken;
 
-            return response()->json(['message' => 'Zalogowano'], 201)->cookie(
-                'tutor_access_token', $token, 60 * 60 * 24 * 7, '/', null, true, false, 'none'
-            );
+            $cookie = cookie('tutor_access_token', $token, 60 * 60 * 24 * 7, '/', null, true, true);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Zalogowano',
+                'data' => $user
+            ])->withCookie($cookie);
+
         } else {
             return response()->json(['error' => 'Bad credentials'], 401);
         }
@@ -119,6 +124,9 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
-        return response()->json(['message' => 'Successfully logged out'], 200);
+
+        $cookie = cookie('tutor_access_token', '', 0, '/', null, true, true);
+
+        return response()->json(['message' => 'Successfully logged out'], 200)->withCookie($cookie);
     }
 }

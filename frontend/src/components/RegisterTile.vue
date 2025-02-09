@@ -120,7 +120,8 @@
 
 <script setup lang="ts">
 import { api } from 'src/boot/axios';
-import { Ref, ref } from 'vue';
+import type { Ref} from 'vue';
+import { ref } from 'vue';
 
 const isPwd = ref(true);
 

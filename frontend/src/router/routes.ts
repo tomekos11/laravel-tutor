@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -8,27 +8,32 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'home',
         path: '',
-        component: () => import('pages/IndexPage.vue')
+        component: () => import('pages/IndexPage.vue'),
       },
       {
         name: 'login',
         path: 'login',
-        component: () => import('pages/LoginPage.vue')
+        component: () => import('pages/LoginPage.vue'),
       },
       {
         name: 'register',
         path: 'register',
-        component: () => import('pages/LoginPage.vue')
-      }
-    ]
+        component: () => import('pages/LoginPage.vue'),
+      },
+      {
+        name: 'profile',
+        path: 'profile',
+        component: () => import('pages/ProfilePage.vue'),
+      },
+    ],
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
+    component: () => import('pages/ErrorNotFound.vue'),
+  },
 ];
 
 export default routes;

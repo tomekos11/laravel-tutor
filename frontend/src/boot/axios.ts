@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -11,13 +12,13 @@ declare module '@vue/runtime-core' {
 console.log(process.env?.API_URL);
 const api = axios.create({
   baseURL: process.env?.API_URL,
-  withCredentials: true // 👈 Dodano globalne ustawienie withCredentials
+  withCredentials: true,
 });
 
 export default boot(({ app }) => {
   // Globalne ustawienia dla axios
   axios.defaults.withCredentials = true; // 👈 Ustawienie domyślne dla wszystkich instancji axios
-  
+
   app.config.globalProperties.$axios = axios;
   app.config.globalProperties.$api = api;
 });
