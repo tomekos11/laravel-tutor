@@ -19,15 +19,15 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://localhost:9000'],
 
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    'exposed_headers' => ['Set-Cookie'],
 
-    'max_age' => 0,
+    'max_age' => 60 * 60 * 24 * 7,
 
     'supports_credentials' => true,
 

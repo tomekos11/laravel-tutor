@@ -84,7 +84,7 @@ class AuthController extends Controller
             $token = $user->createToken('Personal Access Token')->accessToken;
 
             return response()->json(['message' => 'Zalogowano'], 201)->cookie(
-                'tutor_access_token', $token, 60 * 24 * 7, '/', null, true, true, false
+                'tutor_access_token', $token, 60 * 60 * 24 * 7, '/', null, true, false, 'none'
             );
         } else {
             return response()->json(['error' => 'Bad credentials'], 401);
