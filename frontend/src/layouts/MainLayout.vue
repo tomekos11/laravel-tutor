@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lff">
     <q-header elevated>
-      <q-toolbar class="bg-purple-14">
+      <q-toolbar class="bg-slate-950">
         <q-toolbar-title>
           <router-link
             :to="{ name: 'home' }"
@@ -15,49 +15,51 @@
           </router-link>
         </q-toolbar-title>
 
-        <template v-if="userStore.isDataFetched">
+        <!-- <template v-if="userStore.isDataFetched"> -->
 
-          <div class="d-flex q-mx-xl gap-20">
-            <q-btn
-              to="/"
-              class="text-white q-px-md"
-              dense
-              unelevated
-              no-caps
-            >
-              Baza zadań
-            </q-btn>
-  
-            <q-btn
-              to="/"
-              class="text-white q-px-md"
-              dense
-              unelevated
-              no-caps
-            >
-            Homework
-            </q-btn>
-  
-  
-            <q-btn
-              to="/"
-              class="text-white q-px-md"
-              dense
-              unelevated
-              no-caps
-            >
-            Zostań korepetytorem
-            </q-btn>
-  
-          </div>
+        <div class="d-flex q-mx-xl gap-20">
+          <q-btn
+            to="/"
+            class="text-white q-px-md"
+            dense
+            unelevated
+            no-caps
+          >
+            Baza zadań
+          </q-btn>
   
           <q-btn
-            v-if="userStore.isUserLogged"
-            rounded
+            to="/"
+            class="text-white q-px-md"
             dense
-            icon="person"
-            class="bg-purple-1 text-grey-9"
+            unelevated
+            no-caps
           >
+            Homework
+          </q-btn>
+  
+  
+          <q-btn
+            class="text-white q-px-md"
+            dense
+            unelevated
+            no-caps
+            :to="{
+              name: 'become-tutor'
+            }"
+          >
+            Zostań korepetytorem
+          </q-btn>
+  
+        </div>
+  
+        <q-btn
+          v-if="userStore.isUserLogged"
+          rounded
+          dense
+          icon="person"
+          class="bg-purple-1 text-grey-9"
+        >
   
           <q-menu>
             <q-list>
@@ -85,16 +87,16 @@
               </q-item>
             </q-list>
           </q-menu>
-          </q-btn>
+        </q-btn>
   
-          <router-link
-            v-else
-              to="/login"
-              class="q-ml-xl text-white text-bold"
-            >
-              Zaloguj
-            </router-link>
-        </template>
+        <router-link
+          v-else
+          to="/login"
+          class="q-ml-xl text-white text-bold"
+        >
+          Zaloguj
+        </router-link>
+        <!-- </template> -->
 
       </q-toolbar>
     </q-header>
@@ -102,11 +104,16 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer>
+      <Footer />
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { api } from 'src/boot/axios';
+import Footer from 'src/components/Footer.vue';
 import { useUserStore } from 'src/stores/user-store';
 
 const userStore = useUserStore()

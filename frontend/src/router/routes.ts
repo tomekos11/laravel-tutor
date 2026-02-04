@@ -8,7 +8,22 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'home',
         path: '',
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('pages/HomePage.vue'),
+      },
+      {
+        name: 'about-us',
+        path: 'about-us',
+        component: () => import('pages/AboutUsPage.vue'),
+      },
+      {
+        name: 'become-tutor',
+        path: 'become-tutor',
+        component: () => import('pages/BecomeTutorPage.vue'),
+      },
+      {
+        name: 'find-tutor',
+        path: 'find-tutor',
+        component: () => import('pages/FindTutorPage.vue'),
       },
       {
         name: 'login',

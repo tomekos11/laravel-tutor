@@ -1,56 +1,56 @@
-// app global css in SCSS form
+// // app global css in SCSS form
 
-* {
-    font-family: 'Lato', sans-serif;
-}
+// * {
+//     font-family: 'Lato', sans-serif;
+// }
 
-a {
-    text-decoration: none;
-}
-.d-block {
-    display: block;
-}
+// a {
+//     text-decoration: none;
+// }
+// .d-block {
+//     display: block;
+// }
 
-.d-flex {
-    display: flex;
-}
+// .d-flex {
+//     display: flex;
+// }
 
-.gap-4 {
-    gap:4px;
-}
+// .gap-4 {
+//     gap:4px;
+// }
 
-.gap-10 {
-    gap:10px;
-}
+// .gap-10 {
+//     gap:10px;
+// }
 
-.gap-20 {
-    gap:20px;
-}
+// .gap-20 {
+//     gap:20px;
+// }
 
-.text-decoration-none {
-    text-decoration: none;
-}
+// .text-decoration-none {
+//     text-decoration: none;
+// }
 
-.text-hover-underline {
-    cursor: pointer;
-    width: fit-content;
-    margin-inline: auto;
-    position: relative;
-}
+// .text-hover-underline {
+//     cursor: pointer;
+//     width: fit-content;
+//     margin-inline: auto;
+//     position: relative;
+// }
 
-.text-hover-underline:after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    height: 2px;
-    width: 100%;
-    left: 0;
-    background-color: purple;
-    transition: 0.5s;
-    transition-timing-function: ease-in-out;
-    transform: scaleX(0);
-}
+// .text-hover-underline:after {
+//     content: "";
+//     position: absolute;
+//     bottom: 0;
+//     height: 2px;
+//     width: 100%;
+//     left: 0;
+//     background-color: purple;
+//     transition: 0.5s;
+//     transition-timing-function: ease-in-out;
+//     transform: scaleX(0);
+// }
 
-.text-hover-underline:hover:after {
-    transform: scaleX(1.2);
-}
+// .text-hover-underline:hover:after {
+//     transform: scaleX(1.2);
+// }

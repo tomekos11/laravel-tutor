@@ -16,7 +16,7 @@ declare module 'vue' {
 // for each client)
 
 const api = axios.create({
-  baseURL: process.env?.API_URL,
+  baseURL: process.env.API_URL!,
   withCredentials: true,
 });
 

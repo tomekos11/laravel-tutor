@@ -3,7 +3,7 @@ import globals from 'globals';
 import pluginVue from 'eslint-plugin-vue';
 import pluginQuasar from '@quasar/app-vite/eslint';
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
-import prettierSkipFormatting from '@vue/eslint-config-prettier/skip-formatting';
+// import prettierSkipFormatting from '@vue/eslint-config-prettier/skip-formatting';
 
 export default defineConfigWithVueTs(
   {
@@ -64,7 +64,16 @@ export default defineConfigWithVueTs(
     // add your custom rules here
     rules: {
       'prefer-promise-reject-errors': 'off',
-
+      indent: ['error', 2],
+      'vue/script-indent': ['error', 2],
+      'vue/html-indent': ['error', 2, {
+        baseIndent: 1,
+        attribute: 1,
+        closeBracket: 0,
+        alignAttributesVertically: true,
+      }],
+      
+      '@typescript-eslint/await-thenable': 'off',
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     },
@@ -79,5 +88,5 @@ export default defineConfigWithVueTs(
     },
   },
 
-  prettierSkipFormatting,
+  // prettierSkipFormatting,
 );
