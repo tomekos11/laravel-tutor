@@ -90,4 +90,11 @@ class User extends Authenticatable
     public function assignments(){
         return $this -> hasMany(Assignment::class, 'user_id', 'id');
     }
+
+
+    protected static function newFactory()
+    {
+        return \Modules\Users\Database\Factories\UserFactory::new();
+    }
+
 }
