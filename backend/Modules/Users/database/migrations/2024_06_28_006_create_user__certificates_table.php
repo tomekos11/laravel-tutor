@@ -18,8 +18,8 @@ return new class () extends Migration {
             $table->foreignId('user_id');
 
             $table->string('name');
-            $table->string('img');
-            $table->string('link');
+            $table->string('img')->nullable();
+            $table->string('link')->nullable();
             
             $table->string('issued_by');
             $table->string('issue_identifier');

@@ -5,6 +5,12 @@ namespace Modules\Users\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|Rating newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Rating newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Rating query()
+ * @mixin \Eloquent
+ */
 class Rating extends Model
 {
     use HasFactory;
@@ -12,7 +18,7 @@ class Rating extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $table = 'user_ratings';
+    protected $table = 'user__ratings';
     protected $fillable = [
       'tutor_id',
       'reviewer_id',

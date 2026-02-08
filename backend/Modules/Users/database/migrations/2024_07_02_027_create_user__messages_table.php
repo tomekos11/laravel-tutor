@@ -19,7 +19,7 @@ return new class () extends Migration {
             $table->foreignId('creator_id');
 
             $table->string('content');
-            $table->string('img');
+            $table->string('img')->nullable();;
 
             $table->timestamps();
 

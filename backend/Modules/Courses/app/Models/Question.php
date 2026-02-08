@@ -7,6 +7,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Groups\Models\AssignmentAnswerCorrectness;
 use Modules\Users\Models\User;
 
+/**
+ * @property int $id
+ * @property int $creator_id
+ * @property string $content
+ * @property string $type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Question extends Model
 {
     use HasFactory;

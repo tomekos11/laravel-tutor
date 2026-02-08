@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Courses\Models\AssignmentQuestion;
 
+/**
+ * @property int $id
+ * @property int $user_group_id
+ * @property \Illuminate\Support\Carbon|null $open_date
+ * @property \Illuminate\Support\Carbon|null $finish_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereFinishDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereOpenDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereUserGroupId($value)
+ * @mixin \Eloquent
+ */
 class AssignemtDate extends Model
 {
     use HasFactory;

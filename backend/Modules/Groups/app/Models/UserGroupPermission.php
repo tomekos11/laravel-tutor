@@ -5,6 +5,12 @@ namespace Modules\Groups\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroupPermission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroupPermission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroupPermission query()
+ * @mixin \Eloquent
+ */
 class UserGroupPermission extends Model
 {
     use HasFactory;

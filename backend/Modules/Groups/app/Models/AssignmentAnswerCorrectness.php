@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Courses\Models\Question;
 
+/**
+ * @property int $id
+ * @property int $assignment_id
+ * @property int $question_id
+ * @property bool $is_correct
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereAssignmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereIsCorrect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereQuestionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentAnswerCorrectness whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class AssignmentAnswerCorrectness extends Model
 {
     use HasFactory;

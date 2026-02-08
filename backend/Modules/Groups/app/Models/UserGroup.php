@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Users\Models\User;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $group_id
+ * @property bool $is_owner
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereIsOwner($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereUserId($value)
+ * @mixin \Eloquent
+ */
 class UserGroup extends Model
 {
     use HasFactory;

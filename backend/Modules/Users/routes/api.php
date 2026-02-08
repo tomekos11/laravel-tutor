@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Users\Http\Controllers\AuthController;
-
+use Modules\Users\Http\Controllers\TutorListingController;
 
 // use Modules\Users\Http\Controllers\AuthController;
 /*
@@ -18,6 +18,8 @@ use Modules\Users\Http\Controllers\AuthController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::get('tutor-listing', [TutorListingController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
