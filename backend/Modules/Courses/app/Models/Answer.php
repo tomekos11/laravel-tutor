@@ -31,7 +31,6 @@ class Answer extends Model
      */
     protected $table = 'course__answers';
     protected $fillable = [
-        'id',
         'creator_id',
         'question_id'
     ];

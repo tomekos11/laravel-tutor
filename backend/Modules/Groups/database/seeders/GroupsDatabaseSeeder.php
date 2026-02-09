@@ -11,6 +11,14 @@ class GroupsDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            GroupSeeder::class,
+            UserGroupSeeder::class,
+            PermissionSeeder::class,
+            AssignmentDateSeeder::class,
+            AssignmentSeeder::class,
+            AssignmentAnswerCorrectnessSeeder::class,
+            AssignmentAnswerSeeder::class,
+        ]);
     }
 }

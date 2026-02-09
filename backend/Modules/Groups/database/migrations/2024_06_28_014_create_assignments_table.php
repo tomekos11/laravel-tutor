@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->id();
 
             $table->foreignId('user_id');
-            $table->foreignId('assignemnt_date_id');
+            $table->foreignId('assignment_date_id');
 
             $table->timestamps();
 
@@ -25,7 +25,7 @@ return new class () extends Migration {
                 ->on('user__users')
                 ->onDelete('cascade');
 
-            $table->foreign('assignemnt_date_id')
+            $table->foreign('assignment_date_id')
                 ->references('id')
                 ->on('group__assignments_dates')
                 ->onDelete('cascade');

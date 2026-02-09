@@ -33,7 +33,6 @@ class AnswerRating extends Model
      */
     protected $table = 'course__answers_ratings';
     protected $fillable = [
-        'id',
         'reviewer_id',
         'answer_id',
         'mark'

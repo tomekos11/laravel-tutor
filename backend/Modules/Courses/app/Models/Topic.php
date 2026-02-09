@@ -28,7 +28,6 @@ class Topic extends Model
      */
     protected $table = 'course__topics';
     protected $fillable = [
-        'id',
         'name'
     ];
     protected $hidden = [
@@ -40,7 +39,7 @@ class Topic extends Model
     ];
 
     public function courseTopics(){
-        return $this -> hasMany(courseTopic::class, 'topic_id', 'id');
+        return $this -> hasMany(CourseTopic::class, 'topic_id', 'id');
     }
     public function topicQuestions(){
         return $this -> hasMany(TopicQuestion::class, 'topic_id', 'id');

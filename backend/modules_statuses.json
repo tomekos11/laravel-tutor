@@ -4,5 +4,7 @@
     "User": true,
     "Ratings": true,
     "Groups": true,
-    "Courses": true
+    "Courses": true,
+    "Orders": true,
+    "Lessons": true
 }

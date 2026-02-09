@@ -11,6 +11,16 @@ class CoursesDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            FieldSeeder::class,
+            LevelSeeder::class,
+            CourseSeeder::class,
+            TopicSeeder::class,
+            CourseTopicSeeder::class,
+            QuestionSeeder::class,
+            TopicQuestionSeeder::class,
+            AnswerSeeder::class,
+            AssignmentQuestionSeeder::class,
+        ]);
     }
 }

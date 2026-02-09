@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $id
  * @property int $user_id
  * @property string $name
- * @property string $img
+ * @property string|null $img
  * @property string|null $link
  * @property string $issued_by
  * @property string $issue_identifier

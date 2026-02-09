@@ -30,7 +30,6 @@ class CourseTopic extends Model
      */
     protected $table = 'course__courses_topics';
     protected $fillable = [
-        'id',
         'topic_id',
         'course_id'
     ];
