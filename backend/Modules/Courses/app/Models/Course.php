@@ -31,7 +31,6 @@ class Course extends Model
      */
     protected $table = 'course__courses';
     protected $fillable = [
-        'id',
         'level_id',
         'field_id'
     ];

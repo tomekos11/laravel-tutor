@@ -4,11 +4,12 @@ namespace Modules\Groups\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Users\Models\User;
 
 /**
  * @property int $id
  * @property int $user_id
- * @property int $assignemnt_date_id
+ * @property int $assignment_date_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Assignment newModelQuery()
@@ -31,7 +32,7 @@ class Assignment extends Model
     protected $table = 'group__assignments';
     protected $fillable = [
         'user_id',
-        'assingment_date_id'
+        'assignment_date_id'
     ];
 
     protected $hidden = [
@@ -47,7 +48,7 @@ class Assignment extends Model
     }
 
     public function assignmentDate(){
-        return $this -> belongsTo(AssignemtDate::class, 'assignment_date_id', 'id');
+        return $this -> belongsTo(AssignmentDate::class, 'assignment_date_id', 'id');
     }
 
     public function user(){

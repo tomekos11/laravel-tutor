@@ -11,6 +11,9 @@ class RatingsDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            AnswerRatingSeeder::class,
+            QuestionRatingSeeder::class,
+        ]);
     }
 }

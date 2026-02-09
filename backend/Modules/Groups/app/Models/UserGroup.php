@@ -51,7 +51,7 @@ class UserGroup extends Model
     }
 
     public function assignmentDates(){
-        return $this -> hasMany(AssignemtDate::class, 'user_group_id', 'id');
+        return $this -> hasMany(AssignmentDate::class, 'user_group_id', 'id');
     }
 
     public function user(){

@@ -4,7 +4,7 @@ namespace Modules\Courses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Groups\Models\AssignemtDate;
+use Modules\Groups\Models\AssignmentDate;
 
 /**
  * @property int $id
@@ -40,6 +40,6 @@ class AssignmentQuestion extends Model
     }
 
     public function assignmentDate(){
-        return $this -> belongsTo(AssignemtDate::class, 'assignment_id', 'id');
+        return $this -> belongsTo(AssignmentDate::class, 'assignment_date_id', 'id');
     }
 }

@@ -28,7 +28,6 @@ class Field extends Model
      */
     protected $table = 'course__fields';
     protected $fillable = [
-        'id',
         'name'
     ];
     protected $hidden = [

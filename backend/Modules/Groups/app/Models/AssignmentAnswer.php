@@ -30,7 +30,7 @@ class AssignmentAnswer extends Model
      */
     protected $table = 'group__assignments_answers';
     protected $fillable = [
-        'assignment_answer_correctness_id',
+        'answer_correctness_id',
         'is_correct',
     ];
     protected $hidden = [

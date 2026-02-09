@@ -13,18 +13,18 @@ use Modules\Courses\Models\AssignmentQuestion;
  * @property \Illuminate\Support\Carbon|null $finish_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate query()
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereFinishDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereOpenDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssignemtDate whereUserGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereFinishDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereOpenDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AssignmentDate whereUserGroupId($value)
  * @mixin \Eloquent
  */
-class AssignemtDate extends Model
+class AssignmentDate extends Model
 {
     use HasFactory;
 
@@ -43,8 +43,8 @@ class AssignemtDate extends Model
     ];
 
     protected $casts = [
-        'open_date' => 'date',
-        'finish_date' => 'date'
+        'open_date' => 'datetime',
+        'finish_date' => 'datetime'
     ];
 
     public function assignmentQuestions(){

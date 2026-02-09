@@ -33,7 +33,6 @@ class QuestionRating extends Model
      */
     protected $table = 'course__questions_ratings';
     protected $fillable = [
-        'id',
         'reviewer_id',
         'question_id',
         'mark'
