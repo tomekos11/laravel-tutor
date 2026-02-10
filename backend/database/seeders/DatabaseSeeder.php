@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             \Modules\Groups\Database\Seeders\GroupsDatabaseSeeder::class,
             \Modules\Ratings\Database\Seeders\RatingsDatabaseSeeder::class,
             \Modules\Lessons\Database\Seeders\LessonsDatabaseSeeder::class,
-        ]);
+            \Modules\Advertisements\Database\Seeders\AdvertisementsDatabaseSeeder::class,
+            ]);
     }
 }

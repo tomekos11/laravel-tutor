@@ -6,5 +6,6 @@
     "Groups": true,
     "Courses": true,
     "Orders": true,
-    "Lessons": true
+    "Lessons": true,
+    "Advertisements": true
 }
