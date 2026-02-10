@@ -126,6 +126,15 @@ class User extends Authenticatable
         return $this -> hasMany(Assignment::class, 'user_id', 'id');
     }
 
+    public function givenRatings()
+    {
+        return $this->hasMany(Rating::class, 'reviewer_id', 'id');
+    }
+
+    public function receivedRatings()
+    {
+        return $this->hasMany(Rating::class, 'tutor_id', 'id');
+    }
 
     protected static function newFactory()
     {
