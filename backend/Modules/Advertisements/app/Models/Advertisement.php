@@ -65,4 +65,9 @@ class Advertisement extends Model
     {
         return $this->hasMany(AdvertisementLocation::class, 'advertisement_id', 'id');
     }
+
+    protected static function newFactory()
+    {
+        return \Modules\Advertisements\Database\Factories\AdvertisementFactory::new();
+    }
 }

@@ -14,4 +14,11 @@ use Modules\Advertisements\Http\Controllers\AdvertisementsController;
  *
 */
 
-Route::get('tutor-advertisements', [AdvertisementsController::class, 'index']);
+
+// Publiczne odczyty
+Route::apiResource('advertisements', AdvertisementsController::class)->only(['index', 'show']);
+
+// Mutacje tylko dla zalogowanego użytkownika (Passport)
+Route::middleware('auth:api')->group(function () {
+    Route::apiResource('advertisements', AdvertisementsController::class)->only(['store', 'update', 'destroy']);
+});
