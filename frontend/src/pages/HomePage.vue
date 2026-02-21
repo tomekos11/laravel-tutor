@@ -14,6 +14,8 @@
             <span class="text-sky-400">uczniów i korepetytorów</span>
           </h1>
 
+          <aniomwany-box v-if="isClient" />
+
           <p class="text-slate-200 text-base sm:text-lg max-w-xl mb-6">
             Nie jesteśmy zwykłym katalogiem ogłoszeń. Nasz system dobiera korepetytorów do uczniów
             na podstawie celów, stylu nauki i dostępności – tak, aby każda godzina naprawdę miała sens.
@@ -228,44 +230,12 @@
         </div>
       </div>
     </section>
-
-
-    <!-- CTA KOŃCOWE -->
-    <section class="border-t border-slate-800">
-      <div class="max-w-4xl mx-auto px-6 py-12 text-center">
-        <h2 class="text-2xl font-bold mb-3">
-          Gotowy, żeby ruszyć z nauką na serio?
-        </h2>
-        <p class="text-slate-300 text-sm max-w-2xl mx-auto mb-6">
-          Opowiedz nam o swoich celach, a w kilka minut zaproponujemy korepetytorów,
-          którzy pasują do Ciebie nie tylko terminami, ale też sposobem pracy.
-        </p>
-        <div class="flex justify-center gap-3">
-          <q-btn
-            color="primary"
-            unelevated
-            no-caps
-            class="px-6 py-2 font-semibold rounded-full bg-sky-500 hover:bg-sky-400"
-            label="Znajdź korepetytora"
-          />
-          <q-btn
-            flat
-            color="white"
-            no-caps
-            class="px-4 py-2 font-semibold rounded-full border border-slate-600 hover:bg-slate-800"
-            label="Zobacz, jak to działa"
-            :to="{
-              name: 'about-us'
-            }"
-          />
-        </div>
-      </div>
-    </section>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import Tutors from 'src/components/tutors-listing/Tutors.vue';
+import AniomwanyBox from 'src/components/AniomwanyBox.vue';
+import { computed } from 'vue';
 
-  
+const isClient = computed(() => import.meta.env.CLIENT);
 </script>

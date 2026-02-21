@@ -15,8 +15,16 @@ declare module 'vue' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 
+// W SSR (Node) process.env.API_URL może być niezainicjowany – fallback dla dev
+const getApiBaseURL = (): string => {
+  const envUrl = typeof process !== 'undefined' && process.env?.API_URL;
+  if (envUrl) return envUrl;
+  if (import.meta.env?.DEV) return 'http://localhost:8000';
+  return '';
+};
+
 const api = axios.create({
-  baseURL: process.env.API_URL!,
+  baseURL: getApiBaseURL(),
   withCredentials: true,
 });
 
