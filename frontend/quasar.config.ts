@@ -12,7 +12,14 @@ export default defineConfig((ctx) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n', 'axios', 'me'],
+    boot: [
+      'i18n',
+      'axios',
+      // Tylko na serwerze – wypełnia store przed renderem; na kliencie stan z hydratacji
+      { path: 'me', client: false },
+      { path: 'motion', server: false },
+      { path: 'error-reporting', server: false },
+    ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss', "tailwind.css"],
@@ -54,7 +61,7 @@ export default defineConfig((ctx) => {
       // publicPath: '/',
       // analyze: true,
       env: {
-        API_URL: 'http://127.0.0.1:8000',
+        API_URL: 'http://localhost:8000',
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
@@ -99,6 +106,7 @@ export default defineConfig((ctx) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
+      port: 9000,
       // https: true,
       open: true, // opens browser window automatically
     },
@@ -144,6 +152,7 @@ export default defineConfig((ctx) => {
       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
+        'client-error-report', // endpoint POST /api/client-error do logowania błędów z klienta
         'render', // keep this as last one
       ],
 

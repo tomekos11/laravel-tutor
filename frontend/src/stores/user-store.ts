@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import type { UserStoreUser } from 'src/types/api';
 
 export const useUserStore = defineStore('user', () => {
   const id = ref<number | null>(null);
@@ -15,18 +16,7 @@ export const useUserStore = defineStore('user', () => {
 
   const isDataFetched = ref(false);
 
-  function setUser(userData: {
-    id: number;
-    email: string;
-    username: string;
-    phone: string | null;
-    name: string | null;
-    surname: string | null;
-    birthday: string | null;
-    image: string | null;
-    created_at: string;
-    updated_at: string;
-  }) {
+  function setUser(userData: UserStoreUser) {
     id.value = userData.id;
     email.value = userData.email;
     username.value = userData.username;

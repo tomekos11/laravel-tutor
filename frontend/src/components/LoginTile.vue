@@ -47,6 +47,8 @@ import { api } from 'src/boot/axios';
 import { useUserStore } from 'src/stores/user-store';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import type { ApiResponse, UserFromApi } from 'src/types/api';
+import { toUserStoreUser } from 'src/types/api';
 
 const router = useRouter();
 
@@ -63,7 +65,10 @@ const loginRequest = async () => {
       password: password.value,
     });
 
-    useUserStore().setUser(res.data.data);
+    const body = res.data as ApiResponse<UserFromApi>;
+    if (body.success && body.data) {
+      useUserStore().setUser(toUserStoreUser(body.data));
+    }
 
     await router.push({
       name: 'home',

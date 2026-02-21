@@ -1,6 +1,10 @@
 <template>
   <footer class="bg-slate-950 border-t border-slate-800">
-    <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-center gap-6">
+    <!-- CTA tylko dla niezalogowanych -->
+    <div
+      v-if="!userStore.isUserLogged"
+      class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-center gap-6"
+    >
       <div class="flex-1">
         <h2 class="text-xl md:text-2xl font-bold mb-2">
           Gotowy, żeby ruszyć z nauką na serio?
@@ -31,8 +35,10 @@
       </div>
     </div>
 
-    <!-- Dolny pasek z socialami -->
-    <div class="border-t border-slate-800">
+    <!-- Dolny pasek: kontakt + social (zawsze; dla zalogowanych to jedyna część stopki) -->
+    <div
+      :class="{ 'border-t border-slate-800': !userStore.isUserLogged }"
+    >
       <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
         <div class="flex items-center gap-2">
           <q-icon name="mail" size="18px" />
@@ -82,3 +88,10 @@
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+import { useUserStore } from 'src/stores/user-store';
+
+defineOptions({ name: 'AppFooter' });
+const userStore = useUserStore();
+</script>

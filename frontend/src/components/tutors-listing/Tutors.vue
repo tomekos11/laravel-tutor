@@ -31,6 +31,8 @@ import { reactive } from 'vue'
 import TutorsFilters from './TutorsFilters.vue'
 import TutorsListing from './TutorsListing.vue'
 
+defineOptions({ name: 'TutorsPage' })
+
 type LessonType = 'online' | 'stationary'
 type GroupType = 'any' | '1v1' | 'small' | 'large'
 
