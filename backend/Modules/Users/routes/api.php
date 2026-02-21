@@ -23,5 +23,6 @@ Route::get('tutor-listing', [TutorListingController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
+    Route::patch('me', [AuthController::class, 'updateProfile']);
     Route::get('logout', [AuthController::class, 'logout']);
 });

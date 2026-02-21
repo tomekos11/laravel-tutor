@@ -96,6 +96,39 @@ class AuthController extends Controller
     }
 
     /**
+     * Update the authenticated user's profile.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return apiResponse(null, 'User not authenticated', false, 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name'    => 'nullable|string|max:120',
+            'surname' => 'nullable|string|max:120',
+            'email'   => 'nullable|string|email|max:120|unique:user__users,email,' . $user->id,
+            'phone'   => 'nullable|string|max:20|unique:user__users,phone,' . $user->id,
+            'birthday'=> 'nullable|date',
+            'image'   => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return apiResponse($validator->errors(), 'Validation failed', false, 422);
+        }
+
+        $user->fill($request->only(['name', 'surname', 'email', 'phone', 'birthday', 'image']));
+        $user->save();
+
+        return apiResponse($user, 'Profile updated successfully', true, 200);
+    }
+
+    /**
      * Logout the current user and revoke their access token.
      *
      * @param Request $request
