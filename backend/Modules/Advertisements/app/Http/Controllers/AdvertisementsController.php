@@ -6,12 +6,62 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Modules\Advertisements\Models\Advertisement;
 use Modules\Advertisements\Http\Requests\StoreAdvertisementRequest;
 use Modules\Advertisements\Http\Requests\UpdateAdvertisementRequest;
 
 class AdvertisementsController extends Controller
 {
+    public function filters(): JsonResponse
+    {
+        $categoryNames = Advertisement::query()
+            ->join('course__fields as fields', 'advertisement__advertisements.field_id', '=', 'fields.id')
+            ->whereNotNull('fields.name')
+            ->select('fields.name')
+            ->distinct()
+            ->orderBy('fields.name')
+            ->pluck('fields.name')
+            ->values();
+
+        $locationNames = Advertisement::query()
+            ->join('advertisement__advertisement_locations as ad_locations', 'advertisement__advertisements.id', '=', 'ad_locations.advertisement_id')
+            ->join('advertisement__locations as locations', 'ad_locations.location_id', '=', 'locations.id')
+            ->whereNotNull('locations.name')
+            ->select('locations.name')
+            ->distinct()
+            ->orderBy('locations.name')
+            ->pluck('locations.name')
+            ->values();
+
+        $cities = Advertisement::query()
+            ->whereNotNull('address')
+            ->pluck('address')
+            ->map(function ($address) {
+                return $this->extractCityFromAddress(is_string($address) ? $address : null);
+            })
+            ->filter()
+            ->unique(fn ($city) => Str::lower((string) $city))
+            ->sort()
+            ->values();
+
+        $formats = $locationNames
+            ->filter(function ($locationName) use ($cities) {
+                return ! $cities->contains(function ($city) use ($locationName) {
+                    return Str::lower((string) $city) === Str::lower((string) $locationName);
+                });
+            })
+            ->values();
+
+        return response()->json([
+            'data' => [
+                'categories' => $this->toOptions($categoryNames),
+                'formats'    => $this->toOptions($formats),
+                'cities'     => $this->toOptions($cities),
+            ],
+        ]);
+    }
+
     /**
      * Display a listing of the resource with pagination and filtering.
      */
@@ -36,6 +86,30 @@ class AdvertisementsController extends Controller
             $query->whereHas('locations', function ($q) use ($request) {
                 $q->where('advertisement__locations.id', $request->location_id);
             });
+        }
+
+        // Filtrowanie po formacie zajęć (po nazwach lokalizacji)
+        if ($request->filled('format')) {
+            $formatFilter = $request->input('format');
+            $formats = is_array($formatFilter) ? $formatFilter : explode(',', (string) $formatFilter);
+            $formats = collect($formats)
+                ->map(static fn ($format) => trim((string) $format))
+                ->filter()
+                ->values();
+
+            if ($formats->isNotEmpty()) {
+                $query->whereHas('locations', function ($q) use ($formats) {
+                    $q->whereIn('advertisement__locations.name', $formats->all());
+                });
+            }
+        }
+
+        // Filtrowanie po miejscowości (prefiks adresu "Miasto, ...")
+        if ($request->filled('city')) {
+            $city = trim((string) $request->get('city'));
+            if ($city !== '') {
+                $query->where('address', 'like', $city . '%');
+            }
         }
 
         // Filtrowanie po kategorii (field) – po id lub po nazwie
@@ -232,6 +306,33 @@ class AdvertisementsController extends Controller
     /**
      * Format advertisement data for API response.
      */
+    private function toOptions(Collection $values): array
+    {
+        return $values
+            ->map(static function ($value) {
+                $normalized = trim((string) $value);
+
+                return [
+                    'label' => $normalized,
+                    'value' => $normalized,
+                ];
+            })
+            ->filter(static fn (array $option) => $option['value'] !== '')
+            ->values()
+            ->all();
+    }
+
+    private function extractCityFromAddress(?string $address): ?string
+    {
+        if ($address === null) {
+            return null;
+        }
+
+        $city = trim((string) Str::of($address)->before(','));
+
+        return $city !== '' ? $city : null;
+    }
+
     private function formatAdvertisement(Advertisement $ad): array
     {
         $user = $ad->user;

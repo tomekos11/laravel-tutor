@@ -4,7 +4,10 @@
       {{ emptyMessage }}
     </p>
     <template v-else>
-      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div
+        class="grid gap-6"
+        :class="drawerOpen ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 md:grid-cols-3 xl:grid-cols-4'"
+      >
         <q-card
           v-for="tutor in tutors"
           :key="tutor.id"
@@ -45,7 +48,7 @@
           </q-card-section>
 
           <q-card-section>
-            <p class="text-body2 text-slate-200 text-justify leading-relaxed">
+            <p class="text-body2 text-slate-200 text-justify leading-relaxed line-clamp-3">
               {{ tutor.description }}
             </p>
           </q-card-section>
@@ -115,10 +118,14 @@ export interface NormalizedTutor {
   hasAvatar: boolean
 }
 
-const props = defineProps<{
-  tutors: NormalizedTutor[]
-  paginationMeta: TutorListingMeta | null
-}>()
+const props = withDefaults(
+  defineProps<{
+    tutors: NormalizedTutor[]
+    paginationMeta: TutorListingMeta | null
+    drawerOpen?: boolean
+  }>(),
+  { drawerOpen: true }
+)
 
 const emit = defineEmits<{
   (e: 'page', page: number): void
