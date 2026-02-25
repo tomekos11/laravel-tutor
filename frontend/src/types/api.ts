@@ -66,3 +66,18 @@ export function toUserStoreUser(user: UserFromApi): UserStoreUser {
     updated_at: user.updated_at ?? '',
   };
 }
+
+/** Tutor as returned by GET /api/tutor-listing. */
+export interface TutorFromApi {
+  id: number;
+  name: string;
+  specialization: string;
+  rating: number;
+  price_per_hour: number;
+  avatar: string | null;
+  mode: string;
+  format: 'online' | 'offline' | 'hybrid';
+  description: string;
+  categories: string[];
+  has_avatar: boolean;
+}

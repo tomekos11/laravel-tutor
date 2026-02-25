@@ -15,6 +15,8 @@ use Modules\Advertisements\Http\Controllers\AdvertisementsController;
 */
 
 
+Route::get('advertisements/filters', [AdvertisementsController::class, 'filters']);
+
 // Publiczne odczyty
 Route::apiResource('advertisements', AdvertisementsController::class)->only(['index', 'show']);
 

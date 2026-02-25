@@ -6,12 +6,62 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Modules\Advertisements\Models\Advertisement;
 use Modules\Advertisements\Http\Requests\StoreAdvertisementRequest;
 use Modules\Advertisements\Http\Requests\UpdateAdvertisementRequest;
 
 class AdvertisementsController extends Controller
 {
+    public function filters(): JsonResponse
+    {
+        $categoryNames = Advertisement::query()
+            ->join('course__fields as fields', 'advertisement__advertisements.field_id', '=', 'fields.id')
+            ->whereNotNull('fields.name')
+            ->select('fields.name')
+            ->distinct()
+            ->orderBy('fields.name')
+            ->pluck('fields.name')
+            ->values();
+
+        $locationNames = Advertisement::query()
+            ->join('advertisement__advertisement_locations as ad_locations', 'advertisement__advertisements.id', '=', 'ad_locations.advertisement_id')
+            ->join('advertisement__locations as locations', 'ad_locations.location_id', '=', 'locations.id')
+            ->whereNotNull('locations.name')
+            ->select('locations.name')
+            ->distinct()
+            ->orderBy('locations.name')
+            ->pluck('locations.name')
+            ->values();
+
+        $cities = Advertisement::query()
+            ->whereNotNull('address')
+            ->pluck('address')
+            ->map(function ($address) {
+                return $this->extractCityFromAddress(is_string($address) ? $address : null);
+            })
+            ->filter()
+            ->unique(fn ($city) => Str::lower((string) $city))
+            ->sort()
+            ->values();
+
+        $formats = $locationNames
+            ->filter(function ($locationName) use ($cities) {
+                return ! $cities->contains(function ($city) use ($locationName) {
+                    return Str::lower((string) $city) === Str::lower((string) $locationName);
+                });
+            })
+            ->values();
+
+        return response()->json([
+            'data' => [
+                'categories' => $this->toOptions($categoryNames),
+                'formats'    => $this->toOptions($formats),
+                'cities'     => $this->toOptions($cities),
+            ],
+        ]);
+    }
+
     /**
      * Display a listing of the resource with pagination and filtering.
      */
@@ -38,9 +88,39 @@ class AdvertisementsController extends Controller
             });
         }
 
-        // Filtrowanie po kategorii (field)
+        // Filtrowanie po formacie zajęć (po nazwach lokalizacji)
+        if ($request->filled('format')) {
+            $formatFilter = $request->input('format');
+            $formats = is_array($formatFilter) ? $formatFilter : explode(',', (string) $formatFilter);
+            $formats = collect($formats)
+                ->map(static fn ($format) => trim((string) $format))
+                ->filter()
+                ->values();
+
+            if ($formats->isNotEmpty()) {
+                $query->whereHas('locations', function ($q) use ($formats) {
+                    $q->whereIn('advertisement__locations.name', $formats->all());
+                });
+            }
+        }
+
+        // Filtrowanie po miejscowości (prefiks adresu "Miasto, ...")
+        if ($request->filled('city')) {
+            $city = trim((string) $request->get('city'));
+            if ($city !== '') {
+                $query->where('address', 'like', $city . '%');
+            }
+        }
+
+        // Filtrowanie po kategorii (field) – po id lub po nazwie
         if ($request->has('field_id')) {
             $query->where('field_id', $request->field_id);
+        }
+        if ($request->filled('category')) {
+            $category = $request->get('category');
+            $query->whereHas('field', function ($q) use ($category) {
+                $q->where('name', 'like', '%' . $category . '%');
+            });
         }
 
         // Filtrowanie po cenie (min)
@@ -56,6 +136,27 @@ class AdvertisementsController extends Controller
         // Filtrowanie po użytkowniku
         if ($request->has('user_id')) {
             $query->where('user_id', $request->user_id);
+        }
+
+        // Minimalna średnia ocena korepetytora
+        $minRating = $request->filled('min_rating') ? (float) $request->min_rating : 0;
+        if ($request->boolean('only_top_rated')) {
+            $minRating = max($minRating, 4.5);
+        }
+        if ($minRating > 0) {
+            $tutorIds = \Modules\Users\Models\User::query()
+                ->whereHas('receivedRatings')
+                ->withAvg('receivedRatings', 'rating')
+                ->having('received_ratings_avg_rating', '>=', $minRating)
+                ->pluck('id');
+            $query->whereIn('user_id', $tutorIds);
+        }
+
+        // Tylko ogłoszenia korepetytorów z avatarem
+        if ($request->boolean('only_with_avatar')) {
+            $query->whereHas('user', function ($q) {
+                $q->whereNotNull('image')->where('image', '!=', '');
+            });
         }
 
         // Sortowanie
@@ -82,11 +183,17 @@ class AdvertisementsController extends Controller
         })->all();
 
         return response()->json([
-            'data' => $data,
-            'current_page' => $ads->currentPage(),
-            'last_page' => $ads->lastPage(),
-            'per_page' => $ads->perPage(),
-            'total' => $ads->total(),
+            'data'          => $data,
+            'meta'          => [
+                'current_page' => $ads->currentPage(),
+                'last_page'    => $ads->lastPage(),
+                'per_page'     => $ads->perPage(),
+                'total'        => $ads->total(),
+            ],
+            'current_page'  => $ads->currentPage(),
+            'last_page'     => $ads->lastPage(),
+            'per_page'      => $ads->perPage(),
+            'total'         => $ads->total(),
         ]);
     }
 
@@ -199,6 +306,33 @@ class AdvertisementsController extends Controller
     /**
      * Format advertisement data for API response.
      */
+    private function toOptions(Collection $values): array
+    {
+        return $values
+            ->map(static function ($value) {
+                $normalized = trim((string) $value);
+
+                return [
+                    'label' => $normalized,
+                    'value' => $normalized,
+                ];
+            })
+            ->filter(static fn (array $option) => $option['value'] !== '')
+            ->values()
+            ->all();
+    }
+
+    private function extractCityFromAddress(?string $address): ?string
+    {
+        if ($address === null) {
+            return null;
+        }
+
+        $city = trim((string) Str::of($address)->before(','));
+
+        return $city !== '' ? $city : null;
+    }
+
     private function formatAdvertisement(Advertisement $ad): array
     {
         $user = $ad->user;
