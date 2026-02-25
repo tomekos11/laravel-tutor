@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 
 type LessonType = 'online' | 'stationary'
 type GroupType = 'any' | '1v1' | 'small' | 'large'
@@ -173,6 +173,7 @@ interface Filters {
 
 const emit = defineEmits<{
   (e: 'update:filters', value: Filters): void
+  (e: 'apply'): void
 }>()
 
 const categoryOptionsSource = [
@@ -227,7 +228,17 @@ function onCategoryFilter (val: string, update: (cb: () => void) => void) {
 }
 
 function emitFilters () {
-  emit('update:filters', { ...filters })
+  emit('update:filters', {
+    category: filters.category,
+    priceRange: { ...filters.priceRange },
+    lessonType: [...filters.lessonType],
+    minRating: filters.minRating,
+    groupType: filters.groupType,
+    onlyWithAvatar: filters.onlyWithAvatar,
+    onlyTopRated: filters.onlyTopRated,
+    onlyAvailableEvenings: filters.onlyAvailableEvenings
+  })
+  emit('apply')
 }
 
 function resetFilters () {
@@ -242,12 +253,4 @@ function resetFilters () {
   filters.onlyAvailableEvenings = false
   emitFilters()
 }
-
-watch(
-  () => ({ ...filters }),
-  () => {
-    emitFilters()
-  },
-  { deep: true }
-)
 </script>

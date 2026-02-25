@@ -38,9 +38,15 @@ class AdvertisementsController extends Controller
             });
         }
 
-        // Filtrowanie po kategorii (field)
+        // Filtrowanie po kategorii (field) – po id lub po nazwie
         if ($request->has('field_id')) {
             $query->where('field_id', $request->field_id);
+        }
+        if ($request->filled('category')) {
+            $category = $request->get('category');
+            $query->whereHas('field', function ($q) use ($category) {
+                $q->where('name', 'like', '%' . $category . '%');
+            });
         }
 
         // Filtrowanie po cenie (min)
@@ -56,6 +62,27 @@ class AdvertisementsController extends Controller
         // Filtrowanie po użytkowniku
         if ($request->has('user_id')) {
             $query->where('user_id', $request->user_id);
+        }
+
+        // Minimalna średnia ocena korepetytora
+        $minRating = $request->filled('min_rating') ? (float) $request->min_rating : 0;
+        if ($request->boolean('only_top_rated')) {
+            $minRating = max($minRating, 4.5);
+        }
+        if ($minRating > 0) {
+            $tutorIds = \Modules\Users\Models\User::query()
+                ->whereHas('receivedRatings')
+                ->withAvg('receivedRatings', 'rating')
+                ->having('received_ratings_avg_rating', '>=', $minRating)
+                ->pluck('id');
+            $query->whereIn('user_id', $tutorIds);
+        }
+
+        // Tylko ogłoszenia korepetytorów z avatarem
+        if ($request->boolean('only_with_avatar')) {
+            $query->whereHas('user', function ($q) {
+                $q->whereNotNull('image')->where('image', '!=', '');
+            });
         }
 
         // Sortowanie
@@ -82,11 +109,17 @@ class AdvertisementsController extends Controller
         })->all();
 
         return response()->json([
-            'data' => $data,
-            'current_page' => $ads->currentPage(),
-            'last_page' => $ads->lastPage(),
-            'per_page' => $ads->perPage(),
-            'total' => $ads->total(),
+            'data'          => $data,
+            'meta'          => [
+                'current_page' => $ads->currentPage(),
+                'last_page'    => $ads->lastPage(),
+                'per_page'     => $ads->perPage(),
+                'total'        => $ads->total(),
+            ],
+            'current_page'  => $ads->currentPage(),
+            'last_page'     => $ads->lastPage(),
+            'per_page'      => $ads->perPage(),
+            'total'         => $ads->total(),
         ]);
     }
 
