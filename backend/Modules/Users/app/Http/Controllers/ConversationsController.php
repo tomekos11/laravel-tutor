@@ -38,7 +38,7 @@ class ConversationsController extends Controller
         // osobnym zapytaniem i grupujemy w PHP.
         $lastMessageByConversation = Message::whereIn('conversation_id', $conversationIds)
             ->with('user')
-            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get()
             ->groupBy('conversation_id')
             ->map(fn ($messages) => $messages->first());
@@ -147,7 +147,7 @@ class ConversationsController extends Controller
 
         $conversation->load('members');
         $pivot = UserConversation::where('conversation_id', $conversation->id)->where('member_id', $authId)->first();
-        $lastMessage = $conversation->messages()->with('user')->latest()->first();
+        $lastMessage = $conversation->messages()->with('user')->orderByDesc('id')->first();
 
         return response()->json(['data' => $this->formatSummary($conversation, $authId, $pivot, $lastMessage)]);
     }
@@ -168,7 +168,7 @@ class ConversationsController extends Controller
 
         $messages = $conversation->messages()
             ->with('user')
-            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate($perPage);
 
         $data = collect($messages->items())
@@ -280,7 +280,7 @@ class ConversationsController extends Controller
         $conversation->load('members');
 
         $pivot = UserConversation::where('conversation_id', $id)->where('member_id', $authId)->first();
-        $lastMessage = $conversation->messages()->with('user')->latest()->first();
+        $lastMessage = $conversation->messages()->with('user')->orderByDesc('id')->first();
 
         return response()->json([
             'message' => 'Dodano uczestnika.',
