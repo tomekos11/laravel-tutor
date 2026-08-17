@@ -37,7 +37,8 @@ class Message extends Model
         'conversation_id',
         'creator_id',
         'content',
-        'img'
+        'img',
+        'type',
     ];
     protected $hidden = [
 
@@ -52,6 +53,6 @@ class Message extends Model
     }
 
     public function user(){
-        return $this -> belongsTo(User::class, 'user_id', 'id');
+        return $this -> belongsTo(User::class, 'creator_id', 'id');
     }
 }

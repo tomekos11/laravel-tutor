@@ -98,11 +98,22 @@ class User extends Authenticatable
     }
 
     public function usersConversations(){
-        return $this -> hasMany(UserConversation::class, 'user_id', 'id');
+        return $this -> hasMany(UserConversation::class, 'member_id', 'id');
     }
 
     public function conversations(){
         return $this -> hasMany(Conversation::class, 'owner_id', 'id');
+    }
+
+    /** Wszystkie konwersacje, w których użytkownik jest uczestnikiem (1-1 i grupowe). */
+    public function memberConversations()
+    {
+        return $this->belongsToMany(
+            \Modules\Users\Models\Conversation::class,
+            'user__users_conversations',
+            'member_id',
+            'conversation_id'
+        )->withPivot('last_read_at');
     }
 
     public function messages(){

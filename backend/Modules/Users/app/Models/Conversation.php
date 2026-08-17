@@ -35,7 +35,8 @@ class Conversation extends Model
         'id',
         'title',
         'theme',
-        'owner_id'
+        'owner_id',
+        'type',
     ];
 
     protected $hidden = [
@@ -54,5 +55,20 @@ class Conversation extends Model
     }
     public function user(){
         return $this -> belongsTo(User::class, 'owner_id', 'id');
+    }
+
+    public function members()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user__users_conversations',
+            'conversation_id',
+            'member_id'
+        )->withPivot('last_read_at');
+    }
+
+    public function isDirect(): bool
+    {
+        return $this->type === 'direct';
     }
 }

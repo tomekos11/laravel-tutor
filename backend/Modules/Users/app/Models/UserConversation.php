@@ -32,6 +32,7 @@ class UserConversation extends Model
     protected $fillable = [
         'member_id',
         'conversation_id',
+        'last_read_at',
     ];
 
     protected $hidden = [
@@ -39,7 +40,7 @@ class UserConversation extends Model
     ];
 
     protected $casts = [
-
+        'last_read_at' => 'datetime',
     ];
 
     public function user(){

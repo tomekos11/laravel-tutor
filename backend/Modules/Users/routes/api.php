@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Users\Http\Controllers\AuthController;
+use Modules\Users\Http\Controllers\ConversationsController;
 use Modules\Users\Http\Controllers\EducationController;
 use Modules\Users\Http\Controllers\TutorListingController;
+use Modules\Users\Http\Controllers\UsersController;
 
 // use Modules\Users\Http\Controllers\AuthController;
 /*
@@ -32,4 +34,14 @@ Route::middleware('auth:api')->group(function () {
     Route::post('me/education', [EducationController::class, 'store']);
     Route::put('me/education/{id}', [EducationController::class, 'update']);
     Route::delete('me/education/{id}', [EducationController::class, 'destroy']);
+
+    Route::get('users/search', [UsersController::class, 'search']);
+
+    Route::get('conversations', [ConversationsController::class, 'index']);
+    Route::post('conversations', [ConversationsController::class, 'store']);
+    Route::get('conversations/{id}', [ConversationsController::class, 'show']);
+    Route::get('conversations/{id}/messages', [ConversationsController::class, 'messages']);
+    Route::post('conversations/{id}/messages', [ConversationsController::class, 'sendMessage']);
+    Route::post('conversations/{id}/read', [ConversationsController::class, 'markAsRead']);
+    Route::post('conversations/{id}/participants', [ConversationsController::class, 'addParticipant']);
 });
