@@ -50,4 +50,8 @@ class Group extends Model
     public function userGroups(){
         return $this -> hasMany(UserGroup::class, 'group_id', 'id');
     }
+
+    public function lessons(){
+        return $this -> hasMany(\Modules\Lessons\Models\Lesson::class, 'group_id');
+    }
 }

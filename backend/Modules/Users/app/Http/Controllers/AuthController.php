@@ -5,6 +5,8 @@ namespace Modules\Users\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Users\Models\User;
+use Modules\Users\Models\Role;
+use Modules\Users\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
@@ -39,6 +41,11 @@ class AuthController extends Controller
             'phone'    => $request->phone ?? null,
             'birthday' => $request->birthday ?? null
         ]);
+
+        $studentRole = Role::where('name', 'student')->first();
+        if ($studentRole) {
+            UserRole::firstOrCreate(['user_id' => $user->id, 'role_id' => $studentRole->id]);
+        }
 
         $token = $user->createToken('Personal Access Token')->accessToken;
 
@@ -91,6 +98,9 @@ class AuthController extends Controller
         if (!$user) {
             return apiResponse(null, 'User not authenticated', false, 401);
         }
+
+        $user->load('userRoles.role');
+        $user->roles_list = $user->userRoles->pluck('role.name');
 
         return apiResponse($user, 'User details fetched successfully', true, 200);
     }

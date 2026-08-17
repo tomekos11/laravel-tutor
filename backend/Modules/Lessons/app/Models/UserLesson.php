@@ -14,10 +14,15 @@ class UserLesson extends Model
         'user_id',
         'grade',
         'comment',
+        'absence_reported',
+        'absence_reason',
+        'absence_reported_at',
     ];
 
     protected $casts = [
         'grade' => 'int',
+        'absence_reported' => 'bool',
+        'absence_reported_at' => 'datetime',
     ];
 
     public function lesson(): BelongsTo

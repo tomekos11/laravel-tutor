@@ -15,15 +15,22 @@ class Lesson extends Model
         'start_time',
         'end_time',
         'real_end_time',
+        'remote',
         'shared',
         'notes',
+        'status',
+        'cancelled_by',
+        'cancelled_reason',
+        'cancelled_at',
     ];
 
     protected $casts = [
         'start_time'    => 'datetime',
         'end_time'      => 'datetime',
         'real_end_time' => 'datetime',
+        'remote'        => 'bool',
         'shared'        => 'bool',
+        'cancelled_at'  => 'datetime',
     ];
 
     public function group(): BelongsTo

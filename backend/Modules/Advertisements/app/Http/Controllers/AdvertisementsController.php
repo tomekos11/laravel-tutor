@@ -13,6 +13,8 @@ use Modules\Advertisements\Http\Requests\StoreAdvertisementRequest;
 use Modules\Advertisements\Http\Requests\UpdateAdvertisementRequest;
 use Modules\Courses\Models\Field;
 use Modules\Courses\Models\Level;
+use Modules\Users\Models\Role;
+use Modules\Users\Models\UserRole;
 
 class AdvertisementsController extends Controller
 {
@@ -255,6 +257,12 @@ class AdvertisementsController extends Controller
         }
 
         $ad->load(['field', 'user.receivedRatings', 'locations', 'levels']);
+
+        // Kto wystawia ogłoszenie, jest traktowany jako korepetytor - nadaj rolę "tutor" jeśli jej jeszcze nie ma.
+        $tutorRole = Role::where('name', 'tutor')->first();
+        if ($tutorRole) {
+            UserRole::firstOrCreate(['user_id' => $request->user()->id, 'role_id' => $tutorRole->id]);
+        }
 
         return response()->json([
             'message' => 'Ogłoszenie zostało utworzone pomyślnie.',
