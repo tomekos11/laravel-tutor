@@ -16,11 +16,13 @@ use Modules\Advertisements\Http\Controllers\AdvertisementsController;
 
 
 Route::get('advertisements/filters', [AdvertisementsController::class, 'filters']);
+Route::get('advertisements/form-options', [AdvertisementsController::class, 'formOptions']);
+
+// Mutacje i lista własnych ogłoszeń tylko dla zalogowanego użytkownika (Passport)
+Route::middleware('auth:api')->group(function () {
+    Route::get('advertisements/mine', [AdvertisementsController::class, 'mine']);
+    Route::apiResource('advertisements', AdvertisementsController::class)->only(['store', 'update', 'destroy']);
+});
 
 // Publiczne odczyty
 Route::apiResource('advertisements', AdvertisementsController::class)->only(['index', 'show']);
-
-// Mutacje tylko dla zalogowanego użytkownika (Passport)
-Route::middleware('auth:api')->group(function () {
-    Route::apiResource('advertisements', AdvertisementsController::class)->only(['store', 'update', 'destroy']);
-});

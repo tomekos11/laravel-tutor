@@ -8,11 +8,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Modules\Advertisements\Models\Advertisement;
+use Modules\Advertisements\Models\Location;
 use Modules\Advertisements\Http\Requests\StoreAdvertisementRequest;
 use Modules\Advertisements\Http\Requests\UpdateAdvertisementRequest;
+use Modules\Courses\Models\Field;
+use Modules\Courses\Models\Level;
 
 class AdvertisementsController extends Controller
 {
+    /**
+     * Słowniki (id + nazwa) potrzebne do formularza tworzenia/edycji ogłoszenia.
+     */
+    public function formOptions(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'fields'    => Field::orderBy('name')->get(['id', 'name']),
+                'levels'    => Level::orderBy('name')->get(['id', 'name']),
+                'locations' => Location::orderBy('name')->get(['id', 'name']),
+            ],
+        ]);
+    }
+
+    /**
+     * Ogłoszenia zalogowanego użytkownika (do panelu zarządzania własnymi ofertami).
+     */
+    public function mine(Request $request): JsonResponse
+    {
+        $ads = Advertisement::with(['field', 'user.receivedRatings', 'locations', 'levels'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'data' => $ads->map(fn ($ad) => $this->formatAdvertisement($ad))->all(),
+        ]);
+    }
+
     public function filters(): JsonResponse
     {
         $categoryNames = Advertisement::query()
@@ -343,6 +375,7 @@ class AdvertisementsController extends Controller
         return [
             'id'           => $ad->id,
             'category'     => $ad->field?->name,
+            'field_id'     => $ad->field_id,
             'tutor_name'   => trim(($user?->name ?? '') . ' ' . ($user?->surname ?? '')),
             'price'        => $ad->price,
             'description'  => $ad->description,
@@ -352,7 +385,9 @@ class AdvertisementsController extends Controller
             'rating_count' => $ratingCount,
 
             'levels'       => $ad->levels->pluck('name')->all(),
+            'level_ids'    => $ad->levels->pluck('id')->all(),
             'formats'      => $ad->locations->pluck('name')->all(),
+            'location_ids' => $ad->locations->pluck('id')->all(),
 
             'tutor'        => [
                 'id'       => $user?->id,

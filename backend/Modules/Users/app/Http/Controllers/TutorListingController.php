@@ -90,6 +90,101 @@ class TutorListingController extends Controller
         ]);
     }
 
+    /**
+     * Wyświetla pełny profil korepetytora (do widoku profilu publicznego).
+     */
+    public function show(int $id): JsonResponse
+    {
+        // Uwaga: nie filtrujemy po roli "tutor" (role_id=2) — ogłoszenia
+        // (Modules/Advertisements/database/seeders/AdvertisementSeeder.php)
+        // mogą być przypisane do dowolnego użytkownika, więc autor ogłoszenia
+        // musi być widoczny jako profil niezależnie od przypisanej roli.
+        $user = User::query()
+            ->with([
+                'preference',
+                'certificates',
+                'receivedRatings.reviewer',
+                'userSchools.school',
+                'advertisements.field',
+                'advertisements.locations',
+                'advertisements.levels',
+            ])
+            ->findOrFail($id);
+
+        return response()->json([
+            'data' => $this->formatTutorProfile($user),
+        ]);
+    }
+
+    private function formatTutorProfile(User $user): array
+    {
+        $ratings = $user->receivedRatings;
+        $ratingAvg = $ratings->isEmpty() ? null : round($ratings->avg('rating'), 2);
+
+        $certificateNames = $user->certificates->pluck('name')->all();
+        $specialization = $certificateNames !== [] ? $certificateNames[0] : 'Korepetytor';
+        $price = $user->preference?->hourly_price ?? '0';
+        $format = $user->preference?->tutoring_format ?? 'online';
+
+        $modeLabels = [
+            'online'  => 'Online',
+            'offline' => 'Stacjonarnie',
+            'hybrid'  => 'Online / Stacjonarnie',
+        ];
+
+        return [
+            'id'             => $user->id,
+            'name'           => trim(($user->name ?? '') . ' ' . ($user->surname ?? '')),
+            'email'          => $user->email,
+            'phone'          => $user->phone,
+            'avatar'         => $user->image ?? null,
+            'specialization' => $specialization,
+            'rating'         => $ratingAvg !== null ? (float) $ratingAvg : 0.0,
+            'rating_count'   => $ratings->count(),
+            'price_per_hour' => (float) $price,
+            'format'         => $format,
+            'mode'           => $modeLabels[$format] ?? 'Online',
+
+            'certificates'   => $user->certificates->map(fn ($c) => [
+                'id'               => $c->id,
+                'name'             => $c->name,
+                'issued_by'        => $c->issued_by,
+                'issue_identifier' => $c->issue_identifier,
+                'issue_date'       => $c->issue_date,
+                'link'             => $c->link,
+                'img'              => $c->img,
+            ])->all(),
+
+            'schools'        => $user->userSchools->map(fn ($us) => [
+                'id'         => $us->id,
+                'title'      => $us->title,
+                'type'       => $us->type,
+                'school'     => $us->school?->name,
+                'city'       => $us->school?->city,
+                'begin_date' => $us->begin_date,
+                'end_date'   => $us->end_date,
+            ])->all(),
+
+            'ratings'        => $ratings->sortByDesc('created_at')->values()->map(fn ($r) => [
+                'id'          => $r->id,
+                'rating'      => $r->rating,
+                'description' => $r->description,
+                'reviewer'    => trim(($r->reviewer?->name ?? '') . ' ' . ($r->reviewer?->surname ?? '')),
+                'created_at'  => $r->created_at,
+            ])->all(),
+
+            'advertisements' => $user->advertisements->map(fn ($ad) => [
+                'id'          => $ad->id,
+                'category'    => $ad->field?->name,
+                'price'       => $ad->price,
+                'description' => $ad->description,
+                'address'     => $ad->address,
+                'levels'      => $ad->levels->pluck('name')->all(),
+                'formats'     => $ad->locations->pluck('name')->all(),
+            ])->all(),
+        ];
+    }
+
     private function formatTutor(User $user): array
     {
         $ratingAvg = $user->receivedRatings->isEmpty()
