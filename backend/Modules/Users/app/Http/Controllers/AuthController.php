@@ -8,6 +8,7 @@ use Modules\Users\Models\User;
 use Modules\Users\Models\Role;
 use Modules\Users\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
@@ -136,6 +137,79 @@ class AuthController extends Controller
         $user->save();
 
         return apiResponse($user, 'Profile updated successfully', true, 200);
+    }
+
+    /**
+     * Upload / replace the authenticated user's profile photo.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadAvatar(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return apiResponse(null, 'User not authenticated', false, 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'avatar' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return apiResponse($validator->errors(), 'Validation failed', false, 422);
+        }
+
+        $this->deleteAvatarFile($user->image);
+
+        $path = $request->file('avatar')->store('avatars', 'public');
+        $user->image = Storage::disk('public')->url($path);
+        $user->save();
+
+        return apiResponse($user, 'Profile photo updated successfully', true, 200);
+    }
+
+    /**
+     * Remove the authenticated user's profile photo.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteAvatar(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return apiResponse(null, 'User not authenticated', false, 401);
+        }
+
+        $this->deleteAvatarFile($user->image);
+        $user->image = null;
+        $user->save();
+
+        return apiResponse($user, 'Profile photo removed successfully', true, 200);
+    }
+
+    /**
+     * Delete a previously uploaded avatar file from the public disk, if it
+     * points at one (ignores externally hosted image URLs).
+     */
+    private function deleteAvatarFile(?string $image): void
+    {
+        if (!$image) {
+            return;
+        }
+
+        $marker = '/storage/avatars/';
+        $position = strpos($image, $marker);
+
+        if ($position === false) {
+            return;
+        }
+
+        $relativePath = 'avatars/' . substr($image, $position + strlen($marker));
+        Storage::disk('public')->delete($relativePath);
     }
 
     /**

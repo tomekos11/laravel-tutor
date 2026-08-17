@@ -28,6 +28,8 @@ Route::get('tutors/{id}', [TutorListingController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::patch('me', [AuthController::class, 'updateProfile']);
+    Route::post('me/avatar', [AuthController::class, 'uploadAvatar']);
+    Route::delete('me/avatar', [AuthController::class, 'deleteAvatar']);
     Route::get('logout', [AuthController::class, 'logout']);
 
     Route::get('me/education', [EducationController::class, 'index']);
