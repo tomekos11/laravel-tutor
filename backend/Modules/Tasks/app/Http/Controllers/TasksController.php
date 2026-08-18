@@ -51,6 +51,10 @@ class TasksController extends Controller
             $query->where('difficulty', $request->get('difficulty'));
         }
 
+        if ($request->has('solved')) {
+            $query->where('solved', $request->boolean('solved'));
+        }
+
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->get('search') . '%');
         }
@@ -88,6 +92,7 @@ class TasksController extends Controller
             'attachment_path' => 'nullable|string',
             'book_id' => 'nullable|integer|exists:book__books,id',
             'book_task_number' => 'nullable|string|max:60',
+            'solved' => 'sometimes|boolean',
         ], self::imageValidationRules()));
 
         if ($validator->fails()) {
@@ -104,6 +109,7 @@ class TasksController extends Controller
             'attachment_path' => $request->attachment_path,
             'book_id' => $request->book_id,
             'book_task_number' => $request->book_id ? $request->book_task_number : null,
+            'solved' => $request->boolean('solved'),
         ]);
 
         $this->storeImages($request, $task);
@@ -165,6 +171,7 @@ class TasksController extends Controller
             'attachment_path' => 'nullable|string',
             'book_id' => 'nullable|integer|exists:book__books,id',
             'book_task_number' => 'nullable|string|max:60',
+            'solved' => 'sometimes|boolean',
         ], self::imageValidationRules()));
 
         if ($validator->fails()) {
@@ -176,6 +183,10 @@ class TasksController extends Controller
         }
 
         $task->fill($request->only(['title', 'description', 'subject', 'category', 'difficulty', 'attachment_path', 'book_id', 'book_task_number']));
+
+        if ($request->has('solved')) {
+            $task->solved = $request->boolean('solved');
+        }
 
         if (!$task->book_id) {
             $task->book_task_number = null;

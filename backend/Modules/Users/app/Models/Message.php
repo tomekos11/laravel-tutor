@@ -4,6 +4,7 @@ namespace Modules\Users\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Advertisements\Models\Advertisement;
 
 /**
  * @property int $id
@@ -39,6 +40,7 @@ class Message extends Model
         'content',
         'img',
         'type',
+        'advertisement_id',
     ];
     protected $hidden = [
 
@@ -54,5 +56,9 @@ class Message extends Model
 
     public function user(){
         return $this -> belongsTo(User::class, 'creator_id', 'id');
+    }
+
+    public function advertisement(){
+        return $this -> belongsTo(Advertisement::class, 'advertisement_id', 'id');
     }
 }

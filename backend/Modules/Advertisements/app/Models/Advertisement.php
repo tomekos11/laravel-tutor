@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Users\Models\User;
 use Modules\Courses\Models\Field;
 use Modules\Courses\Models\Level;
+use Modules\Groups\Models\Group;
 
 class Advertisement extends Model
 {
@@ -64,6 +65,11 @@ class Advertisement extends Model
     public function advertisementLocations()
     {
         return $this->hasMany(AdvertisementLocation::class, 'advertisement_id', 'id');
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(Group::class, 'advertisement_id', 'id');
     }
 
     protected static function newFactory()

@@ -38,6 +38,7 @@ class AdvertisementsController extends Controller
     public function mine(Request $request): JsonResponse
     {
         $ads = Advertisement::with(['field', 'user.receivedRatings', 'locations', 'levels'])
+            ->withCount('groups')
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -257,6 +258,7 @@ class AdvertisementsController extends Controller
         }
 
         $ad->load(['field', 'user.receivedRatings', 'locations', 'levels']);
+        $ad->loadCount('groups');
 
         // Kto wystawia ogłoszenie, jest traktowany jako korepetytor - nadaj rolę "tutor" jeśli jej jeszcze nie ma.
         $tutorRole = Role::where('name', 'tutor')->first();
@@ -396,6 +398,8 @@ class AdvertisementsController extends Controller
             'level_ids'    => $ad->levels->pluck('id')->all(),
             'formats'      => $ad->locations->pluck('name')->all(),
             'location_ids' => $ad->locations->pluck('id')->all(),
+
+            'groups_count' => $ad->groups_count ?? $ad->groups()->count(),
 
             'tutor'        => [
                 'id'       => $user?->id,

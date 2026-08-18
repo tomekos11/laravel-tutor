@@ -23,6 +23,11 @@ class Task extends Model
         'category',
         'difficulty',
         'attachment_path',
+        'solved',
+    ];
+
+    protected $casts = [
+        'solved' => 'boolean',
     ];
 
     public function author(): BelongsTo

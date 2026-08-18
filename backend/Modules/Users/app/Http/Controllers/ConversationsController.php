@@ -37,7 +37,7 @@ class ConversationsController extends Controller
         // zapytanie, nie per-konwersacja), więc ostatnie wiadomości pobieramy
         // osobnym zapytaniem i grupujemy w PHP.
         $lastMessageByConversation = Message::whereIn('conversation_id', $conversationIds)
-            ->with('user')
+            ->with(['user', 'advertisement'])
             ->orderByDesc('id')
             ->get()
             ->groupBy('conversation_id')
@@ -69,6 +69,7 @@ class ConversationsController extends Controller
             'participant_ids.*' => 'integer|exists:user__users,id',
             'title'             => 'nullable|string|max:150',
             'message'           => 'required|string|max:5000',
+            'advertisement_id'  => 'nullable|integer|exists:advertisement__advertisements,id',
         ]);
 
         $participantIds = collect($validated['participant_ids'])
@@ -92,8 +93,9 @@ class ConversationsController extends Controller
 
             if ($existing) {
                 $message = $existing->messages()->create([
-                    'creator_id' => $authId,
-                    'content'    => $validated['message'],
+                    'creator_id'       => $authId,
+                    'content'          => $validated['message'],
+                    'advertisement_id' => $validated['advertisement_id'] ?? null,
                 ]);
                 $existing->touch();
                 $this->markRead($existing->id, $authId);
@@ -120,8 +122,9 @@ class ConversationsController extends Controller
         }
 
         $message = $conversation->messages()->create([
-            'creator_id' => $authId,
-            'content'    => $validated['message'],
+            'creator_id'       => $authId,
+            'content'          => $validated['message'],
+            'advertisement_id' => $validated['advertisement_id'] ?? null,
         ]);
 
         $conversation->load('members');
@@ -147,7 +150,7 @@ class ConversationsController extends Controller
 
         $conversation->load('members');
         $pivot = UserConversation::where('conversation_id', $conversation->id)->where('member_id', $authId)->first();
-        $lastMessage = $conversation->messages()->with('user')->orderByDesc('id')->first();
+        $lastMessage = $conversation->messages()->with(['user', 'advertisement'])->orderByDesc('id')->first();
 
         return response()->json(['data' => $this->formatSummary($conversation, $authId, $pivot, $lastMessage)]);
     }
@@ -167,7 +170,7 @@ class ConversationsController extends Controller
         $perPage = max(1, min(100, (int) $request->get('per_page', 50)));
 
         $messages = $conversation->messages()
-            ->with('user')
+            ->with(['user', 'advertisement'])
             ->orderByDesc('id')
             ->paginate($perPage);
 
@@ -280,7 +283,7 @@ class ConversationsController extends Controller
         $conversation->load('members');
 
         $pivot = UserConversation::where('conversation_id', $id)->where('member_id', $authId)->first();
-        $lastMessage = $conversation->messages()->with('user')->orderByDesc('id')->first();
+        $lastMessage = $conversation->messages()->with(['user', 'advertisement'])->orderByDesc('id')->first();
 
         return response()->json([
             'message' => 'Dodano uczestnika.',
@@ -357,20 +360,27 @@ class ConversationsController extends Controller
     private function formatMessage(Message $message): array
     {
         $sender = $message->user;
+        $advertisement = $message->advertisement_id ? $message->advertisement : null;
 
         return [
-            'id'              => $message->id,
-            'conversation_id' => $message->conversation_id,
-            'type'            => $message->type ?? 'text',
-            'content'         => $message->content,
-            'img'             => $message->img,
-            'created_at'      => $message->created_at,
-            'sender'          => [
+            'id'               => $message->id,
+            'conversation_id'  => $message->conversation_id,
+            'type'             => $message->type ?? 'text',
+            'content'          => $message->content,
+            'img'              => $message->img,
+            'created_at'       => $message->created_at,
+            'sender'           => [
                 'id'      => $sender?->id,
                 'name'    => $sender?->name,
                 'surname' => $sender?->surname,
                 'image'   => $sender?->image,
             ],
+            'advertisement_id' => $message->advertisement_id,
+            'advertisement'    => $advertisement ? [
+                'id'          => $advertisement->id,
+                'description' => $advertisement->description,
+                'price'       => $advertisement->price,
+            ] : null,
         ];
     }
 }
