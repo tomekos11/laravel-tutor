@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             \Modules\Ratings\Database\Seeders\RatingsDatabaseSeeder::class,
             \Modules\Lessons\Database\Seeders\LessonsDatabaseSeeder::class,
             \Modules\Advertisements\Database\Seeders\AdvertisementsDatabaseSeeder::class,
+            \Modules\Books\Database\Seeders\BooksDatabaseSeeder::class,
+            \Modules\Tasks\Database\Seeders\TasksDatabaseSeeder::class,
             ]);
     }
 }

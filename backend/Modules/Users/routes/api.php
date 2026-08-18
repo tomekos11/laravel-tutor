@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Users\Http\Controllers\AuthController;
 use Modules\Users\Http\Controllers\ConversationsController;
 use Modules\Users\Http\Controllers\EducationController;
+use Modules\Users\Http\Controllers\ParentController;
 use Modules\Users\Http\Controllers\TutorListingController;
 use Modules\Users\Http\Controllers\UsersController;
 
@@ -21,6 +22,8 @@ use Modules\Users\Http\Controllers\UsersController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('password/forgot', [AuthController::class, 'forgotPassword']);
+Route::post('password/reset', [AuthController::class, 'resetPassword']);
 
 Route::get('tutor-listing', [TutorListingController::class, 'index']);
 Route::get('tutors/{id}', [TutorListingController::class, 'show']);
@@ -46,4 +49,17 @@ Route::middleware('auth:api')->group(function () {
     Route::post('conversations/{id}/messages', [ConversationsController::class, 'sendMessage']);
     Route::post('conversations/{id}/read', [ConversationsController::class, 'markAsRead']);
     Route::post('conversations/{id}/participants', [ConversationsController::class, 'addParticipant']);
+
+    // Requests linking parent <-> child accounts to each other; open to both
+    // roles since either side can initiate/confirm a link request.
+    Route::get('parent/requests', [ParentController::class, 'pendingRequests']);
+    Route::post('parent/requests/{id}/respond', [ParentController::class, 'respondToRequest']);
+
+    Route::middleware('role:parent')->group(function () {
+        Route::get('parent/children', [ParentController::class, 'children']);
+        Route::post('parent/children', [ParentController::class, 'createChild']);
+        Route::post('parent/children/link', [ParentController::class, 'requestLink']);
+        Route::delete('parent/children/{childId}', [ParentController::class, 'unlink']);
+        Route::get('parent/children/{childId}/overview', [ParentController::class, 'childOverview']);
+    });
 });

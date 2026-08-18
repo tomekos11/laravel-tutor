@@ -4,12 +4,16 @@ namespace Modules\Groups\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Advertisements\Models\Advertisement;
 use Modules\Courses\Models\Course;
 
 /**
  * @property int $id
  * @property int $course_id
+ * @property int|null $advertisement_id
  * @property string $name
+ * @property int|null $min_members
+ * @property int|null $max_members
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Group newModelQuery()
@@ -32,7 +36,10 @@ class Group extends Model
     protected $table = 'group__groups';
     protected $fillable = [
         'course_id',
-        'name'
+        'advertisement_id',
+        'name',
+        'min_members',
+        'max_members',
     ];
 
     protected $hidden = [
@@ -45,6 +52,10 @@ class Group extends Model
 
     public function course(){
         return $this -> belongsTo(Course::class, 'course_id', 'id');
+    }
+
+    public function advertisement(){
+        return $this -> belongsTo(Advertisement::class, 'advertisement_id', 'id');
     }
 
     public function userGroups(){

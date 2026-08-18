@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Modules\Advertisements\Models\Advertisement;
 use Modules\Courses\Models\Course;
 use Modules\Groups\Models\Group;
 use Modules\Groups\Models\GroupNote;
@@ -21,7 +22,7 @@ class GroupsController extends Controller
     public function index(Request $request)
     {
         $groups = Group::whereHas('userGroups', fn ($q) => $q->where('user_id', Auth::id()))
-            ->with(['course.field', 'course.level'])
+            ->with(['course.field', 'course.level', 'advertisement.field'])
             ->withCount(['userGroups as members_count' => fn ($q) => $q->where('is_owner', false)])
             ->get();
 
@@ -45,10 +46,17 @@ class GroupsController extends Controller
             'course_id' => 'nullable|integer|exists:course__courses,id',
             'field_id' => 'nullable|integer|exists:course__fields,id|required_with:level_id',
             'level_id' => 'nullable|integer|exists:course__levels,id|required_with:field_id',
+            'advertisement_id' => 'nullable|integer|exists:advertisement__advertisements,id',
+            'min_members' => 'nullable|integer|min:1',
+            'max_members' => 'nullable|integer|min:1|gte:min_members',
         ]);
 
         if ($validator->fails()) {
             return apiResponse($validator->errors(), 'Validation failed', false, 422);
+        }
+
+        if ($request->filled('advertisement_id') && !$this->isOwnAdvertisement((int) $request->advertisement_id)) {
+            return apiResponse(null, 'Ogłoszenie nie należy do Ciebie', false, 403);
         }
 
         $courseId = $this->resolveCourseId($request);
@@ -57,6 +65,9 @@ class GroupsController extends Controller
             $group = Group::create([
                 'name' => $request->name,
                 'course_id' => $courseId,
+                'advertisement_id' => $request->advertisement_id ?: null,
+                'min_members' => $request->min_members ?: null,
+                'max_members' => $request->max_members ?: null,
             ]);
 
             UserGroup::create([
@@ -68,7 +79,7 @@ class GroupsController extends Controller
             return $group;
         });
 
-        $group->load('course.field', 'course.level');
+        $group->load('course.field', 'course.level', 'advertisement.field');
 
         return apiResponse($group, 'Group created successfully', true, 201);
     }
@@ -82,7 +93,7 @@ class GroupsController extends Controller
             return apiResponse(null, 'Forbidden', false, 403);
         }
 
-        $group = Group::with(['userGroups.user', 'course.field', 'course.level', 'lessons' => function ($q) {
+        $group = Group::with(['userGroups.user', 'course.field', 'course.level', 'advertisement.field', 'lessons' => function ($q) {
             $q->where('start_time', '>=', now())->orderBy('start_time')->limit(5);
         }])->find($id);
 
@@ -116,10 +127,17 @@ class GroupsController extends Controller
             'course_id' => 'nullable|integer|exists:course__courses,id',
             'field_id' => 'nullable|integer|exists:course__fields,id|required_with:level_id',
             'level_id' => 'nullable|integer|exists:course__levels,id|required_with:field_id',
+            'advertisement_id' => 'nullable|integer|exists:advertisement__advertisements,id',
+            'min_members' => 'nullable|integer|min:1',
+            'max_members' => 'nullable|integer|min:1|gte:min_members',
         ]);
 
         if ($validator->fails()) {
             return apiResponse($validator->errors(), 'Validation failed', false, 422);
+        }
+
+        if ($request->filled('advertisement_id') && !$this->isOwnAdvertisement((int) $request->advertisement_id)) {
+            return apiResponse(null, 'Ogłoszenie nie należy do Ciebie', false, 403);
         }
 
         $group->fill($request->only(['name']));
@@ -128,8 +146,20 @@ class GroupsController extends Controller
             $group->course_id = $this->resolveCourseId($request, $group->course_id);
         }
 
+        if ($request->has('advertisement_id')) {
+            $group->advertisement_id = $request->advertisement_id ?: null;
+        }
+
+        if ($request->has('min_members')) {
+            $group->min_members = $request->min_members ?: null;
+        }
+
+        if ($request->has('max_members')) {
+            $group->max_members = $request->max_members ?: null;
+        }
+
         $group->save();
-        $group->load('course.field', 'course.level');
+        $group->load('course.field', 'course.level', 'advertisement.field');
 
         return apiResponse($group, 'Group updated successfully', true, 200);
     }
@@ -188,6 +218,16 @@ class GroupsController extends Controller
 
         if ($exists) {
             return apiResponse(null, 'User is already a member of this group', false, 409);
+        }
+
+        $group = Group::find($id);
+
+        if ($group && $group->max_members !== null) {
+            $currentMembers = UserGroup::where('group_id', $id)->where('is_owner', false)->count();
+
+            if ($currentMembers >= $group->max_members) {
+                return apiResponse(null, 'Grupa osiągnęła maksymalną liczbę uczniów', false, 422);
+            }
         }
 
         $userGroup = UserGroup::create([
@@ -319,6 +359,13 @@ class GroupsController extends Controller
         }
 
         return $fallback;
+    }
+
+    private function isOwnAdvertisement(int $advertisementId): bool
+    {
+        return Advertisement::where('id', $advertisementId)
+            ->where('user_id', Auth::id())
+            ->exists();
     }
 
     private function isGroupOwner(int $groupId): bool

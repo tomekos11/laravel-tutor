@@ -8,5 +8,6 @@
     "Orders": true,
     "Lessons": true,
     "Advertisements": true,
-    "Tasks": true
+    "Tasks": true,
+    "Books": true
 }

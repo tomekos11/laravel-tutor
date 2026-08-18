@@ -81,6 +81,37 @@ class User extends Authenticatable
         return $this -> hasMany(UserRole::class, 'user_id', 'id');
     }
 
+    /** Linki, w których ten użytkownik jest rodzicem. */
+    public function childLinks(){
+        return $this -> hasMany(ParentChild::class, 'parent_id', 'id');
+    }
+
+    /** Linki, w których ten użytkownik jest dzieckiem. */
+    public function parentLinks(){
+        return $this -> hasMany(ParentChild::class, 'child_id', 'id');
+    }
+
+    /** Zatwierdzone konta dzieci widoczne dla tego rodzica. */
+    public function children(){
+        return $this -> belongsToMany(User::class, 'user__parent_children', 'parent_id', 'child_id')
+            -> wherePivot('status', ParentChild::STATUS_APPROVED)
+            -> withPivot('id', 'status', 'requested_by', 'created_at');
+    }
+
+    /** Zatwierdzeni rodzice tego konta (dziecka). */
+    public function parents(){
+        return $this -> belongsToMany(User::class, 'user__parent_children', 'child_id', 'parent_id')
+            -> wherePivot('status', ParentChild::STATUS_APPROVED)
+            -> withPivot('id', 'status', 'requested_by', 'created_at');
+    }
+
+    public function hasRole(string $role): bool
+    {
+        $this->loadMissing('userRoles.role');
+
+        return $this->userRoles->contains(fn ($userRole) => $userRole->role && $userRole->role->name === $role);
+    }
+
     public function preference(){
         return $this -> hasOne(Preference::class, 'user_id', 'id');
     }

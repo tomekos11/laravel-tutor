@@ -10,6 +10,13 @@ Route::middleware('auth:api')->group(function () {
     Route::put('tasks/{id}', [TasksController::class, 'update'])->middleware('role:tutor');
     Route::delete('tasks/{id}', [TasksController::class, 'destroy'])->middleware('role:tutor');
     Route::post('tasks/{id}/assign', [TasksController::class, 'assignToGroup'])->middleware('role:tutor');
+    Route::get('tasks/{id}/comments', [TasksController::class, 'comments']);
+    Route::post('tasks/{id}/comments', [TasksController::class, 'addComment']);
+    Route::delete('tasks/{id}/comments/{commentId}', [TasksController::class, 'deleteComment']);
+    Route::post('tasks/{id}/comments/{commentId}/pin', [TasksController::class, 'pinComment'])->middleware('role:tutor');
+    Route::delete('tasks/{id}/comments/{commentId}/pin', [TasksController::class, 'unpinComment'])->middleware('role:tutor');
+    Route::post('tasks/{id}/rate', [TasksController::class, 'rate']);
+    Route::delete('task-attachments/{attachmentId}', [TasksController::class, 'deleteAttachment']);
     Route::post('groups/{groupId}/tasks/random-assign', [TasksController::class, 'randomAssign'])->middleware('role:tutor');
     Route::get('groups/{groupId}/tasks', [TasksController::class, 'groupTasks']);
     Route::get('my-submissions', [TasksController::class, 'mySubmissions']);
