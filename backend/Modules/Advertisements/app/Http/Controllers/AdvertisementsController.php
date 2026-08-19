@@ -244,7 +244,9 @@ class AdvertisementsController extends Controller
             'price' => $validated['price'],
             'description' => $validated['description'],
             'field_id' => $validated['field_id'],
-            'address' => $validated['address'],
+            'address' => $validated['address'] ?? null,
+            'travel_radius_km' => $validated['travel_radius_km'] ?? null,
+            'price_per_km' => $validated['price_per_km'] ?? null,
         ]);
 
         // Synchronizacja poziomów
@@ -308,6 +310,18 @@ class AdvertisementsController extends Controller
             'field_id' => $validated['field_id'] ?? null,
             'address' => $validated['address'] ?? null,
         ], static fn ($value) => $value !== null));
+
+        // Pola dojazdu - aktualizowane osobno, bo dopuszczają jawne wyzerowanie (np. zmiana formatu na "Online").
+        if (array_key_exists('travel_radius_km', $validated)) {
+            $ad->travel_radius_km = $validated['travel_radius_km'];
+        }
+        if (array_key_exists('price_per_km', $validated)) {
+            $ad->price_per_km = $validated['price_per_km'];
+        }
+        if (array_key_exists('address', $validated) && $validated['address'] === null) {
+            $ad->address = null;
+        }
+        $ad->save();
 
         // Synchronizacja poziomów
         if (array_key_exists('level_ids', $validated)) {
@@ -390,6 +404,8 @@ class AdvertisementsController extends Controller
             'price'        => $ad->price,
             'description'  => $ad->description,
             'address'      => $ad->address,
+            'travel_radius_km' => $ad->travel_radius_km,
+            'price_per_km' => $ad->price_per_km,
 
             'rating'       => $ratingAvg !== null ? round($ratingAvg, 2) : null,
             'rating_count' => $ratingCount,

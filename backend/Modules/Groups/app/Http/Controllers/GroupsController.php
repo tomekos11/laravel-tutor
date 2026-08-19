@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Modules\Advertisements\Models\Advertisement;
 use Modules\Courses\Models\Course;
+use Modules\Courses\Models\Field;
+use Modules\Courses\Models\Level;
 use Modules\Groups\Models\Group;
 use Modules\Groups\Models\GroupNote;
 use Modules\Groups\Models\UserGroup;
@@ -42,7 +44,7 @@ class GroupsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'course_id' => 'nullable|integer|exists:course__courses,id',
             'field_id' => 'nullable|integer|exists:course__fields,id|required_with:level_id',
             'level_id' => 'nullable|integer|exists:course__levels,id|required_with:field_id',
@@ -61,9 +63,13 @@ class GroupsController extends Controller
 
         $courseId = $this->resolveCourseId($request);
 
-        $group = DB::transaction(function () use ($request, $courseId) {
+        $groupName = $request->filled('name')
+            ? $request->name
+            : $this->generateGroupName($request->field_id, $request->level_id);
+
+        $group = DB::transaction(function () use ($request, $courseId, $groupName) {
             $group = Group::create([
-                'name' => $request->name,
+                'name' => $groupName,
                 'course_id' => $courseId,
                 'advertisement_id' => $request->advertisement_id ?: null,
                 'min_members' => $request->min_members ?: null,
@@ -359,6 +365,28 @@ class GroupsController extends Controller
         }
 
         return $fallback;
+    }
+
+    /**
+     * Automatyczna nazwa grupy, gdy tworzący nie poda własnej: "Kategoria / rok / nr grupy twórcy / poziom".
+     */
+    private function generateGroupName(?int $fieldId, ?int $levelId): string
+    {
+        $fieldName = $fieldId ? Field::find($fieldId)?->name : null;
+        $levelName = $levelId ? Level::find($levelId)?->name : null;
+
+        $ownerGroupsCount = UserGroup::where('user_id', Auth::id())
+            ->where('is_owner', true)
+            ->count();
+
+        $parts = array_filter([
+            $fieldName ?: 'Korepetycje',
+            (string) now()->year,
+            (string) ($ownerGroupsCount + 1),
+            $levelName,
+        ], static fn ($part) => $part !== null && $part !== '');
+
+        return implode(' / ', $parts);
     }
 
     private function isOwnAdvertisement(int $advertisementId): bool

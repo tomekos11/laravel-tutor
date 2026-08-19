@@ -21,10 +21,13 @@ class Advertisement extends Model
         'description',
         'field_id',
         'address',
+        'travel_radius_km',
+        'price_per_km',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'price_per_km' => 'decimal:2',
     ];
 
     public function user()
