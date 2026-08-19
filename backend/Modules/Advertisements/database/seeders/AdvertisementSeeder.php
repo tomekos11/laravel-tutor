@@ -10,6 +10,7 @@ use Modules\Courses\Models\Level;
 use Modules\Courses\Models\Course;
 use Modules\Groups\Models\Group;
 use Modules\Groups\Models\UserGroup;
+use Modules\Users\Models\UserRole;
 
 class AdvertisementSeeder extends Seeder
 {
@@ -26,6 +27,12 @@ class AdvertisementSeeder extends Seeder
         // Licznik grup na twórcę - do generowania nazw grup zgodnie z konwencją
         // "Kategoria / rok / nr grupy twórcy / poziom", tak jak w GroupsController.
         $ownerGroupCounts = [];
+
+        // Uczniowie, których można dopisać jako członków grup zajęciowych podpiętych do ogłoszeń.
+        $studentIds = UserRole::where('role_id', 1)->pluck('user_id')->all();
+        if (empty($studentIds)) {
+            $studentIds = $userIds;
+        }
 
         for ($i = 1; $i <= 10; $i++) {
             $userId  = $userIds[array_rand($userIds)];
@@ -75,6 +82,21 @@ class AdvertisementSeeder extends Seeder
                 'group_id' => $group->id,
                 'is_owner' => true,
             ]);
+
+            // Dopisz uczniów do grupy, żeby zajęcia grupowe miały realnych członków.
+            $candidates = array_values(array_diff($studentIds, [$userId]));
+            shuffle($candidates);
+
+            $membersCount = max($minMembers, min($maxMembers, count($candidates)));
+            $members = array_slice($candidates, 0, $membersCount);
+
+            foreach ($members as $memberId) {
+                UserGroup::create([
+                    'user_id'  => $memberId,
+                    'group_id' => $group->id,
+                    'is_owner' => false,
+                ]);
+            }
         }
     }
 }
